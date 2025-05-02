@@ -26,11 +26,14 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'bio'=>(string) Str::random(10),
+            'address'=>(string) Str::random(10),
+            'profile_photo' => "https://avatar.iran.liara.run/public",
             'email_verified_at' => now(),
             'mobile' => fake()->unique()->numerify('9#########'), // Indian mobile number format
             'company' => fake()->company(),
             'occupation' => fake()->jobTitle(), // Added occupation
-            'department' => fake()->word(), // Added department
+            'department' => fake()->word(), // Added departmen  t
             'designation' => fake()->word(), // Added designation
             'category' => fake()->word(), // Added category
             'role' => 'user',
