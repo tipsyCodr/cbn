@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'occupation' => fake()->jobTitle(), // Added occupation
             'department' => fake()->word(), // Added department
             'designation' => fake()->word(), // Added designation
+            'category' => fake()->word(), // Added category
             'role' => 'user',
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
