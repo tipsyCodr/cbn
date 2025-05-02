@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Referral extends Model
+{
+    protected $table = 'referrals';
+    protected $fillable = ['from','to','referral_type','referral_status','referral_contact_name', 'referral_contact_no','referral_contact_email', 'email', 'mobile', 'address','comments','referral_hotness','active'];
+
+    protected function user(){
+        return $this->belongsToMany(User::class);
+    }
+}

@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\OneToOne; // Import the OneToOne model
+use Illuminate\Http\Request;
+
+class OneToOneController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $otoRequests = OneToOne::all(); // Fetch OneToOne requests
+        return response()->json(['oto_requests' => $otoRequests], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $otoRequest = OneToOne::create($request->all()); // Create a new OneToOne request
+        return response()->json(['oto_request' => $otoRequest], 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(OneToOne $otoRequest)
+    {
+        return response()->json(['oto_request' => $otoRequest], 200); // Return the specific OneToOne request
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, OneToOne $otoRequest)
+    {
+        $otoRequest->update($request->all()); // Update the OneToOne request
+        return response()->json(['oto_request' => $otoRequest], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(OneToOne $otoRequest)
+    {
+        $otoRequest->delete(); // Delete the OneToOne request
+        return response()->json(['message' => 'OneToOne request deleted successfully'], 200);
+    }
+}
