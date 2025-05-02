@@ -99,34 +99,34 @@ class UserController extends Controller
             $twelveMonthsAgo = $now->copy()->subMonths(12);
             
             // Referrals stats
-            $referralsThisWeek = Referral::where('user_id', $user->id)
+            $referralsThisWeek = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $referralsSixMonths = Referral::where('user_id', $user->id)
+            $referralsSixMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
-            $referralsTwelveMonths = Referral::where('user_id', $user->id)
+            $referralsTwelveMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $referralsLifetime = Referral::where('user_id', $user->id)->count();
+            $referralsLifetime = Referral::where('from', $user->id)->count();
             
             // TYFCB stats
-            $tyfcbThisWeek = ThankYou::where('user_id', $user->id)
+            $tyfcbThisWeek = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $tyfcbSixMonths = ThankYou::where('user_id', $user->id)
+            $tyfcbSixMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
-            $tyfcbTwelveMonths = ThankYou::where('user_id', $user->id)
+            $tyfcbTwelveMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $tyfcbLifetime = ThankYou::where('user_id', $user->id)->count();
+            $tyfcbLifetime = ThankYou::where('from', $user->id)->count();
             
             // One-to-One stats
             $otoThisWeek = OneToOne::where('user_id', $user->id)
