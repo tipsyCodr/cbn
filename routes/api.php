@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     })->name('user');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/home', [UserController::class, 'home'])->name('user.details');
 
     // Referral Routes
     Route::prefix('referral')->name('referral.')->group(function () {

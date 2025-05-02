@@ -72,4 +72,48 @@ class UserController extends Controller
     {
         return response()->json(['message' => 'User deleted successfully', 'user' => $user], 200);
     }
+
+    /**
+     * Fetch authenticated user's details
+     */
+    public function home(Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found'
+                ], 404);
+            }
+            
+            // Return user details
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'mobile' => $user->mobile,
+                    'occupation' => $user->occupation,
+                    'department' => $user->department,
+                    'category' => $user->category,
+                    'designation' => $user->designation,
+                    'company' => $user->company,
+                    'address' => $user->address,
+                    'profile_photo' => $user->profile_photo,
+                    'bio' => $user->bio,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch user details',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
