@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Referral;
+use App\Models\ThankYou; // TYFCB model
+use App\Models\OneToOne; // One-to-one model
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Validator;
 
 class UserController extends Controller
@@ -88,6 +92,57 @@ class UserController extends Controller
                 ], 404);
             }
             
+            // Calculate time periods
+            $now = Carbon::now();
+            $startOfWeek = $now->startOfWeek();
+            $sixMonthsAgo = $now->copy()->subMonths(6);
+            $twelveMonthsAgo = $now->copy()->subMonths(12);
+            
+            // Referrals stats
+            $referralsThisWeek = Referral::where('user_id', $user->id)
+                ->where('created_at', '>=', $startOfWeek)
+                ->count();
+                
+            $referralsSixMonths = Referral::where('user_id', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)
+                ->count();
+                
+            $referralsTwelveMonths = Referral::where('user_id', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->count();
+                
+            $referralsLifetime = Referral::where('user_id', $user->id)->count();
+            
+            // TYFCB stats
+            $tyfcbThisWeek = ThankYou::where('user_id', $user->id)
+                ->where('created_at', '>=', $startOfWeek)
+                ->count();
+                
+            $tyfcbSixMonths = ThankYou::where('user_id', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)
+                ->count();
+                
+            $tyfcbTwelveMonths = ThankYou::where('user_id', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->count();
+                
+            $tyfcbLifetime = ThankYou::where('user_id', $user->id)->count();
+            
+            // One-to-One stats
+            $otoThisWeek = OneToOne::where('user_id', $user->id)
+                ->where('created_at', '>=', $startOfWeek)
+                ->count();
+                
+            $otoSixMonths = OneToOne::where('user_id', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)
+                ->count();
+                
+            $otoTwelveMonths = OneToOne::where('user_id', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->count();
+                
+            $otoLifetime = OneToOne::where('user_id', $user->id)->count();
+            
             // Return user details
             return response()->json([
                 'status' => 'success',
@@ -104,8 +159,29 @@ class UserController extends Controller
                     'address' => $user->address,
                     'profile_photo' => $user->profile_photo,
                     'bio' => $user->bio,
+                    'due_date' => $user->due_date,
                     'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at
+                    'updated_at' => $user->updated_at,
+                    'stats' => [
+                        'referrals' => [
+                            'this_week' => $referralsThisWeek,
+                            'six_months' => $referralsSixMonths,
+                            'twelve_months' => $referralsTwelveMonths,
+                            'lifetime' => $referralsLifetime
+                        ],
+                        'tyfcb' => [
+                            'this_week' => $tyfcbThisWeek,
+                            'six_months' => $tyfcbSixMonths,
+                            'twelve_months' => $tyfcbTwelveMonths,
+                            'lifetime' => $tyfcbLifetime
+                        ],
+                        'one_to_one' => [
+                            'this_week' => $otoThisWeek,
+                            'six_months' => $otoSixMonths,
+                            'twelve_months' => $otoTwelveMonths,
+                            'lifetime' => $otoLifetime
+                        ]
+                    ]
                 ]
             ], 200);
         } catch (\Exception $e) {
