@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'designation' => fake()->word(), // Added designation
             'category' => fake()->word(), // Added category
             'role' => 'user',
+            'due_date' => now()->addYear(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
