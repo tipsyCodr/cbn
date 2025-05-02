@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('update', [OneToOneController::class, 'update'])->name('update');
         Route::post('delete', [OneToOneController::class, 'delete'])->name('delete');
     });
+    Route::get('/members', [UserController::class, 'index'])->name('members.index');
 });
 
 // Route::prefix('v1')->group(function () {
