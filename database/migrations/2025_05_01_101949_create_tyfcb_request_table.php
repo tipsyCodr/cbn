@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('from')->comment('User id of the user who is thanking');
             $table->string('to')->comment('User who to send the request');
+            $table->decimal('amount', 10, 2)->comment('Amount associated with the request');
             $table->enum('business_type', ['new','repeat'])->default('new');
             $table->enum('referral_type',['inside','outside','tier3'])->default('outside');
             $table->string('comments');
