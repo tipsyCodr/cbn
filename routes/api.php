@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
+Route::get('login',function(){
+    return "You are not Logged in!";
+})->name('login');
+
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 // Protected Routes
@@ -26,17 +30,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // Referral Routes
     Route::prefix('referrals')->name('referrals.')->group(function () {
         Route::get('/', [ReferralController::class, 'index'])->name('index');
+        Route::get('/{id}', [ReferralController::class, 'show'])->name('show');
         Route::post('store', [ReferralController::class, 'store'])->name('store');
         Route::post('update', [ReferralController::class, 'update'])->name('update');
-        Route::post('delete', [ReferralController::class, 'delete'])->name('delete');
+        Route::post('delete', [ReferralController::class, 'destroy'])->name('delete');
     });
 
     // Thank You FCB Routes
     Route::prefix('tyfcb-requests')->name('tyfcb.')->group(function () {
         Route::get('/', [ThankYouController::class, 'index'])->name('index');
+        Route::get('/{id}', [ThankYouController::class, 'show'])->name('show');
         Route::post('store', [ThankYouController::class, 'store'])->name('store');
         Route::post('update', [ThankYouController::class, 'update'])->name('update');
-        Route::post('delete', [ThankYouController::class, 'delete'])->name('delete');
+        Route::post('delete', [ThankYouController::class, 'destroy'])->name('delete');
     });
 
     // One-to-One Routes
