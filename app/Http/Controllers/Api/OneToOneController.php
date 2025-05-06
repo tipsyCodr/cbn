@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\OneToOne; // Import the OneToOne model
 use Illuminate\Http\Request;
+use App\Models\User; // Import the User model
 
 class OneToOneController extends Controller
 {
@@ -52,7 +53,16 @@ class OneToOneController extends Controller
                 ], 404);
             }
             
-            return response()->json(['oto_request' => $otoRequest], 200); // Return the specific OneToOne request
+            // Get the user details
+            $user = User::find($otoRequest->user_id); // Assuming 'user_id' is the user ID
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'oto_request' => $otoRequest,
+                    'user_name' => $user ? $user->name : null // Include user name
+                ]
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
