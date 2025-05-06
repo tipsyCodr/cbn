@@ -21,7 +21,11 @@ class ThankYouController extends Controller
      */
     public function store(Request $request)
     {
-        $thankYou = ThankYou::create($request->all());
+        try{
+            $thankYou = ThankYou::create($request->all());
+        }catch(\Exception $e){
+            return "Error:". $e->getMessage();     
+        }
         return response()->json(['thankYou'=>$thankYou],201);
     }
 
