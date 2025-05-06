@@ -9,20 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/user', function (Request $request) {
+    // Auth Routes
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // User Routes
+    Route::get('user', function (Request $request) {
         return $request->user();
     })->name('user');
-
-    Route::get('/users', [UserController::class, 'index'])->name('users');
-    Route::get('/home', [UserController::class, 'home'])->name('user.details');
+    Route::get('home', [UserController::class, 'home'])->name('user.home');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
 
     // Referral Routes
-    Route::prefix('referral')->name('referral.')->group(function () {
+    Route::prefix('referrals')->name('referrals.')->group(function () {
         Route::get('/', [ReferralController::class, 'index'])->name('index');
         Route::post('store', [ReferralController::class, 'store'])->name('store');
         Route::post('update', [ReferralController::class, 'update'])->name('update');
@@ -44,9 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('update', [OneToOneController::class, 'update'])->name('update');
         Route::post('delete', [OneToOneController::class, 'delete'])->name('delete');
     });
-    Route::get('/members', [UserController::class, 'index'])->name('members.index');
 });
 
 // Route::prefix('v1')->group(function () {
 //     require __DIR__.'/api/v1.php';
-// });          
+// });
