@@ -14,7 +14,7 @@ class ThankYouController extends Controller
     {
         try {
             // Get thank you records for the authenticated user
-            $thankYou = ThankYou::where('from', $request->user()->id)->get();
+            $thankYou = ThankYou::with('user:id,name')->where('from', $request->user()->id)->get();
             
             return response()->json([
                 'status' => 'success',
