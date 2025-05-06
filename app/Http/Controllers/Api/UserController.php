@@ -8,6 +8,7 @@ use App\Models\Referral;
 use App\Models\ThankYou; // TYFCB model
 use App\Models\OneToOne; // One-to-one model
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use Validator;
 
@@ -189,6 +190,155 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch user details',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all requests (sent and received) for the authenticated user
+     */
+    public function getAllRequests(Request $request)
+    {
+        try {
+            $userId = $request->user()->id;
+            
+            // Get referrals
+            $sentReferrals = Referral::where('from', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'referral',
+                        'direction' => 'sent',
+                        'from' => $item->from,
+                        'to' => $item->to,
+                        'status' => $item->referral_status,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            $receivedReferrals = Referral::where('to', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'referral',
+                        'direction' => 'received',
+                        'from' => $item->from,
+                        'to' => $item->to,
+                        'status' => $item->referral_status,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            // Get thank you requests
+            $sentThanks = ThankYou::where('from', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'thank_you',
+                        'direction' => 'sent',
+                        'from' => $item->from,
+                        'to' => $item->to,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            $receivedThanks = ThankYou::where('to', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'thank_you',
+                        'direction' => 'received',
+                        'from' => $item->from,
+                        'to' => $item->to,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            // Get one-to-one requests
+            $sentOneToOne = OneToOne::where('user_id', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'one_to_one',
+                        'direction' => 'sent',
+                        'from' => $item->user_id,
+                        'to' => $item->met_with,
+                        'meeting_date' => $item->meeting_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            $receivedOneToOne = OneToOne::where('met_with', $userId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'one_to_one',
+                        'direction' => 'received',
+                        'from' => $item->user_id,
+                        'to' => $item->met_with,
+                        'meeting_date' => $item->meeting_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'data' => $item
+                    ];
+                });
+
+            // Combine all requests
+            $allRequests = collect()
+                ->concat($sentReferrals)
+                ->concat($receivedReferrals)
+                ->concat($sentThanks)
+                ->concat($receivedThanks)
+                ->concat($sentOneToOne)
+                ->concat($receivedOneToOne)
+                ->sortByDesc('created_at')
+                ->values();
+
+            // Get user details for from/to fields
+            $userIds = $allRequests->pluck('from')
+                ->concat($allRequests->pluck('to'))
+                ->unique();
+            
+            $users = User::whereIn('id', $userIds)
+                ->get(['id', 'name', 'email', 'profile_photo'])
+                ->keyBy('id');
+
+            // Add user details to requests
+            $allRequests = $allRequests->map(function ($item) use ($users) {
+                $item['from_user'] = $users[$item['from']] ?? null;
+                $item['to_user'] = $users[$item['to']] ?? null;
+                return $item;
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total' => $allRequests->count(),
+                    'requests' => $allRequests
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch requests',
                 'error' => $e->getMessage()
             ], 500);
         }
