@@ -43,8 +43,9 @@ class OneToOneController extends Controller
         try {
             // Find the OneToOne request that belongs to the authenticated user
             $otoRequest = OneToOne::where('id', $id)
-                ->where('user_id', $request->user()->id)
-                ->first();
+            ->where('user_id', $request->user()->id)
+            ->with('user') // Assuming you have a relationship defined in the ThankYou model
+            ->first();
             
             if (!$otoRequest) {
                 return response()->json([
