@@ -22,8 +22,11 @@ class OneToOneController extends Controller
      */
     public function store(Request $request)
     {
-        $otoRequest = OneToOne::create($request->all()); // Create a new OneToOne request
-        return response()->json(['oto_request' => $otoRequest], 201);
+       try{ $otoRequest = OneToOne::create($request->all()); // Create a new OneToOne request
+        return response()->json(['oto_request' => $otoRequest], 201);}
+        catch(\Exception $e){
+            return response()->json(['Error: '=> $e->getMessage()],500);
+        }
     }
 
     /**
