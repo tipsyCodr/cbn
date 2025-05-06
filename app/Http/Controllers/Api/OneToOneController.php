@@ -47,7 +47,7 @@ class OneToOneController extends Controller
             ->select('id', 'user_id', 'met_with', 'initiated_by', 'meeting_location', 'meeting_date', 'topics', 'active') // Select only the necessary fields
             ->with('user:id,name') // Get only the user's name
             ->first();
-            
+
             if (!$otoRequest) {
                 return response()->json([
                     'status' => 'error',
@@ -60,7 +60,6 @@ class OneToOneController extends Controller
                 'status' => 'success',
                 'data' => [
                     'oto_request' => $otoRequest,
-                    'user_name' => $otoRequest->user->name ?? null
                 ]
             ], 200);
         } catch (\Exception $e) {
