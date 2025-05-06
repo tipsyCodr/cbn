@@ -21,11 +21,11 @@ return new class extends Migration
             $table->string('referral_contact_no')->nullable();
             $table->string('referral_contact_email')->nullable();
             $table->string('mobile');
-            $table->string('email');
-            $table->string('address');
-            $table->string('comments');
+            $table->string('email')->nullable();
+            $table->string('address')->nullable();
+            $table->string('comments')->nullable();
             $table->string('referral_hotness');
-            $table->string('active');
+            $table->string('active')->default(1);
             $table->timestamps();
         });
     }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->decimal('amount', 10, 2)->comment('Amount associated with the request');
             $table->enum('business_type', ['new','repeat'])->default('new');
             $table->enum('referral_type',['inside','outside','tier3'])->default('outside');
-            $table->string('comments');
-            $table->string('active');
+            $table->string('comments')->nullable();
+            $table->string('active')->default(1);
             $table->timestamps();
         });
     }

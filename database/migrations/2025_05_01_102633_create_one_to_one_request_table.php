@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('initiated_by')->comment('ID of the user who initiated the meeting');
             $table->string('meeting_location')->comment('Location where the meeting will take place');
             $table->string('meeting_date')->comment('Date of the scheduled meeting');
-            $table->text('topics')->comment('Topics discussed during the meeting');
-            $table->string('active');
+            $table->text('topics')->nullable()->comment('Topics discussed during the meeting');
+            $table->string('active')->default(1);
             $table->timestamps();
         });
     }
