@@ -21,6 +21,7 @@ class ThankYouController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         try{
             $thankYou = ThankYou::create($request->all());
         }catch(\Exception $e){
