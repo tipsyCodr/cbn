@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return 'Hello';
+        // return 'Hello';
         $users = User::where('active', 1)->where('role', 'user')->get();
         return response()->json(['users' => $users], 200);
     }
