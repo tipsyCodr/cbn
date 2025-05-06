@@ -44,7 +44,8 @@ class OneToOneController extends Controller
             // Find the OneToOne request that belongs to the authenticated user
             $otoRequest = OneToOne::where('id', $id)
             ->where('user_id', $request->user()->id)
-            ->with('user') // Assuming you have a relationship defined in the ThankYou model
+            ->select('id', 'user_id', 'met_with', 'initiated_by', 'meeting_location', 'meeting_date', 'topics', 'active') // Select only the necessary fields
+            ->with('user:id,name') // Get only the user's name
             ->first();
             
             if (!$otoRequest) {
