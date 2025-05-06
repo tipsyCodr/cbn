@@ -12,4 +12,5 @@ class OneToOne extends Model
     protected function user(){
         return $this->belongsToMany(User::class);
     }
+    
 }
