@@ -54,14 +54,12 @@ class OneToOneController extends Controller
                 ], 404);
             }
             
-            // Get the user details
-            $user = User::find($otoRequest->user_id); // Assuming 'user_id' is the user ID
 
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'oto_request' => $otoRequest,
-                    'user_name' => $user ? $user->name : null // Include user name
+                    'user_name' => $otoRequest->user->name ?? null
                 ]
             ], 200);
         } catch (\Exception $e) {
