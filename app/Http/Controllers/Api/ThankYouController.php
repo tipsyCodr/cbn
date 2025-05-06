@@ -21,13 +21,13 @@ class ThankYouController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         try{
             $thankYou = ThankYou::create($request->all());
+            return response()->json(['thankYou'=>$thankYou],201);
+            
         }catch(\Exception $e){
             return "Error:". $e->getMessage();     
         }
-        return response()->json(['thankYou'=>$thankYou],201);
     }
 
     /**
