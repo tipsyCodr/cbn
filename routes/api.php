@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // One-to-One Routes
     Route::prefix('oto-requests')->name('oto.')->group(function () {
         Route::get('/', [OneToOneController::class, 'index'])->name('index');
+        Route::get('/{id}', [OneToOneController::class, 'show'])->name('show');
         Route::post('store', [OneToOneController::class, 'store'])->name('store');
         Route::post('update', [OneToOneController::class, 'update'])->name('update');
         Route::post('delete', [OneToOneController::class, 'delete'])->name('delete');

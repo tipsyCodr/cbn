@@ -37,9 +37,29 @@ class OneToOneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(OneToOne $otoRequest)
+    public function show(Request $request, $id)
     {
-        return response()->json(['oto_request' => $otoRequest], 200); // Return the specific OneToOne request
+        try {
+            // Find the OneToOne request that belongs to the authenticated user
+            $otoRequest = OneToOne::where('id', $id)
+                ->where('user_id', $request->user()->id)
+                ->first();
+            
+            if (!$otoRequest) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'OneToOne request not found or not authorized'
+                ], 404);
+            }
+            
+            return response()->json(['oto_request' => $otoRequest], 200); // Return the specific OneToOne request
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch OneToOne request',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
