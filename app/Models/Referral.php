@@ -9,7 +9,11 @@ class Referral extends Model
     protected $table = 'referrals';
     protected $fillable = ['from','to','referral_type','referral_status','referral_contact_name', 'referral_contact_no','referral_contact_email', 'email', 'mobile', 'address','comments','referral_hotness','active'];
 
-    protected function user(){
-        return $this->belongsToMany(User::class);
+    public function user(){
+        return $this->belongsTo(User::class, 'from');
+    }
+    
+    public function referredUser(){
+        return $this->belongsTo(User::class, 'to');
     }
 }

@@ -47,13 +47,18 @@ class User extends Authenticatable
         ];
     }
     public function referral(){
-        return $this->HasMany(Referral::class);
+        return $this->hasMany(Referral::class, 'from');
     }
+    
+    public function receivedReferrals(){
+        return $this->hasMany(Referral::class, 'to');
+    }
+    
     public function oto(){
-        return $this->HasMany(OneToOne::class);
+        return $this->hasMany(OneToOne::class,'user_id');
     }
     public function thankyou(){
-        return $this->HasMany(ThankYou::class);
+        return $this->hasMany(ThankYou::class,'from');
     }
  
 }
