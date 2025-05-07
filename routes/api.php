@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 // Public Routes
 Route::get('login',function(){
     return "You are not Logged in!";
-})->name('log-in');
+})->name('logins');
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
