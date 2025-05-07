@@ -63,7 +63,8 @@ class ThankYouController extends Controller
        try {
            // Find the record that belongs to the authenticated user
            $thankYou = ThankYou::where('id', $id)
-                ->where('from', $request->user()->id)
+                ->orwhere('from', $request->user()->id)
+                ->orWhere('to', $request->user()->id)
                 ->first();
            
            if (!$thankYou) {
