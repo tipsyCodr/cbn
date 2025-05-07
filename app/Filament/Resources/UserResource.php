@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Auth;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,17 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->when(Auth::user()?->role === 'moderator', function ($query) {
+                return $query->where('role', 'user');
+            })
+            ->when(Auth::user()?->role === 'admin', function ($query) {
+                return $query->whereIn('role', ['user', 'moderator']);
+            });
+    }
 
     public static function form(Form $form): Form
     {
@@ -74,7 +86,8 @@ class UserResource extends Resource
                         'admin' => 'Admin',
                         'user' => 'User',
                         'moderator' => 'Moderator',
-                    ]),
+                    ])
+                    ->visible(fn () => Auth::user()?->role === 'admin'),
             ]); 
     }
 
@@ -96,14 +109,19 @@ class UserResource extends Resource
                     ->options([
                         'admin' => 'Admin',
                         'user' => 'User',
-                    ]),
+                        'moderator' => 'Moderator',
+                    ])
+                    ->visible(fn () => Auth::user()?->role === 'admin'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn () => Auth::user()?->role !== 'moderator'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()?->role !== 'moderator'),
                 ]),
             ]);
     }
