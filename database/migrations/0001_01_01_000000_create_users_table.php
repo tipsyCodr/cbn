@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('due_date')->nullable();
             $table->string('active')->default(1);
-            $table->enum('role',['admin','user'])->default('user');
+            $table->enum('role',['admin','user','moderator'])->default('user');
             $table->rememberToken();
             $table->timestamps();
         });

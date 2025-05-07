@@ -73,6 +73,7 @@ class UserResource extends Resource
                     ->options([
                         'admin' => 'Admin',
                         'user' => 'User',
+                        'moderator' => 'Moderator',
                     ]),
             ]); 
     }
@@ -122,4 +123,21 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+    // public static function getPages(): array
+    // {
+    //     $pages = [];
+
+    //     if (auth()->user()?->role === 'moderator') {
+    //         $pages['create'] = Pages\CreateUser::route('/create');
+
+    //     } elseif (auth()->user()?->role === 'admin' ) {
+    //         $pages = [
+    //             'index' => Pages\ListUsers::route('/'),
+    //             'create' => Pages\CreateUser::route('/create'),
+    //             'edit' => Pages\EditUser::route('/{record}/edit'),
+    //         ];
+    //     }
+
+    //     return $pages;
+    // }
 }

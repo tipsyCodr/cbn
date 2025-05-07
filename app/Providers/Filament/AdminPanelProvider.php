@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,8 +21,17 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+
+    
     public function panel(Panel $panel): Panel
     {
+        Filament::serving(function () {
+            if (auth()->check() && auth()->user()->role === 'moderator') {
+                // Set the intended URL to the create user page
+                redirect()->setIntendedUrl(route('filament.admin.resources.users.create'));
+            }
+        });
+
         return $panel
             ->default()
             ->id('admin')

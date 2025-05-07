@@ -20,8 +20,20 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'bio',
+        'mobile',
         'email',
+        'occupation',
+        'department',
+        'category',
+        'designation',
+        'company',
+        'address',
+        'profile_photo',
         'password',
+        'due_date',
+        'active',
+        'role'
     ];
 
     /**
@@ -44,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
     }
     public function referral(){
