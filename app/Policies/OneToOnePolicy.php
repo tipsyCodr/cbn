@@ -13,7 +13,7 @@ class OneToOnePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -21,7 +21,7 @@ class OneToOnePolicy
      */
     public function view(User $user, OneToOne $oneToOne): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -29,7 +29,7 @@ class OneToOnePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -37,7 +37,7 @@ class OneToOnePolicy
      */
     public function update(User $user, OneToOne $oneToOne): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -45,7 +45,7 @@ class OneToOnePolicy
      */
     public function delete(User $user, OneToOne $oneToOne): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -53,7 +53,7 @@ class OneToOnePolicy
      */
     public function restore(User $user, OneToOne $oneToOne): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 
     /**
@@ -61,6 +61,6 @@ class OneToOnePolicy
      */
     public function forceDelete(User $user, OneToOne $oneToOne): bool
     {
-        return false;
+        return $user->role === 'admin'; // Only admins can list users
     }
 }
