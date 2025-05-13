@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
     Route::post('update-profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->name('update.profile');
     Route::post('update-profile-photo', [App\Http\Controllers\Api\UserController::class, 'updateProfilePic'])->name('update.profile');
+    
+    Route::post('get-profile', [App\Http\Controllers\Api\UserController::class, 'getProfile'])->name('get.profile');
+    
 
     
     // Referral Routes

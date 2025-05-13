@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Referral;
 use App\Models\ThankYou; // TYFCB model
 use App\Models\OneToOne; // One-to-one model
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
@@ -78,6 +79,23 @@ class UserController extends Controller
         return response()->json(['message' => 'Profile picture updated successfully', 'user' => $user], 200);
     }
 
+    public function getProfile(Request $request)
+    {
+       try{ $id = $request->id;
+            $user = User::findOrFail($id);
+
+            return response()->json([
+                'status'=>'success',
+                'user'=>$user,
+            ]);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status'=>'error',
+                'message'=>$e->getMessage(),
+            ]);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
