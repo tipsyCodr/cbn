@@ -24,6 +24,14 @@ class UserController extends Controller
         return response()->json(['users' => $users], 200);
     }
 
+    public function profile(){
+        $user = auth()->user();
+        return response()->json([
+            'status'=>'success',
+            'user'=> $user
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
