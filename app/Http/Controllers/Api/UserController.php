@@ -82,8 +82,7 @@ class UserController extends Controller
     public function getProfile(Request $request)
     {
        try{
-           return $request;
-            $request = json_decode($request);    
+            // $request = json_decode($request);    
             $id = $request->id;
 
             $user = User::findOrFail($id);
