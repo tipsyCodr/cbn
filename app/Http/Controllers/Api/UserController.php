@@ -83,7 +83,7 @@ class UserController extends Controller
     {
        try{
             $request = json_decode($request);    
-            return $request;
+            return $request->id;
             $id = $request->id;
 
             $user = User::findOrFail($id);
