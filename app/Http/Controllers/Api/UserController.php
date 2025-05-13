@@ -82,8 +82,8 @@ class UserController extends Controller
     public function getProfile(Request $request)
     {
        try{
-            $id = $request->id;
-            $user = User::findOrFail($id);
+             $id = $request->id;
+            $user = \App\Models\User::findOrFail($id);
 
             return response()->json([
                 'status'=>'success',
