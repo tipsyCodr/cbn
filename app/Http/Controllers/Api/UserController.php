@@ -32,6 +32,32 @@ class UserController extends Controller
         ]);
     }
 
+    public function updateProfile(Request $request){
+        $user = auth()->user();
+        $validate = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'bio' => 'sometimes|nullable|string|max:500',
+            'mobile' => 'sometimes|nullable|string|max:15|unique:users,mobile,' . $user->id,
+            'email' => 'sometimes|nullable|email|unique:users,email,' . $user->id,
+            'occupation' => 'sometimes|nullable|string|max:255',
+            'department' => 'sometimes|nullable|string|max:255',
+            'category' => 'sometimes|nullable|string|max:255',
+            'designation' => 'sometimes|nullable|string|max:255',
+            'company' => 'sometimes|nullable|string|max:255',
+            'address' => 'sometimes|nullable|string|max:255',
+            'profile_photo' => 'sometimes|nullable|string|max:255',
+            'password' => 'sometimes|nullable|string|min:8',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json(['error' => $validate->errors()], 422);
+        }
+
+        $user->update($request->all());
+
+        return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

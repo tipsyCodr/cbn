@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('update-profile', [UserController::class, 'updateProfile'])->name('update.profile');
 
     
     // Referral Routes
