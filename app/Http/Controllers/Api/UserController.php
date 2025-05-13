@@ -57,6 +57,26 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
+    public function updateProfilePic(Request $request)
+    {
+        $user = auth()->user();
+
+        $validate = Validator::make($request->all(), [
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json(['error' => $validate->errors()], 422);
+        }
+
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $user->profile_photo = $path;
+            $user->save();
+        }
+
+        return response()->json(['message' => 'Profile picture updated successfully', 'user' => $user], 200);
+    }
 
     /**
      * Store a newly created resource in storage.
