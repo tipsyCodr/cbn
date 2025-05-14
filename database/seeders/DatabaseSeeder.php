@@ -23,9 +23,10 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
         
-        // Run the NotificationSeeder to create test notifications
+        // Run the seeders
         $this->call([
             NotificationSeeder::class,
+            MeetingSeeder::class,
         ]);
     }
 }

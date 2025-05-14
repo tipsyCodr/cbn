@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\ThankYouController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
         Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
         Route::post('/clear/{id}', [NotificationController::class, 'clearNotification'])->name('clear');
+    });
+    
+    // Meeting Routes
+    Route::prefix('meetings')->name('meetings.')->group(function () {
+        Route::get('/next', [MeetingController::class, 'getNextMeeting'])->name('next');
+        Route::get('/upcoming', [MeetingController::class, 'getUpcomingMeetings'])->name('upcoming');
     });
     
     // Referral Routes
