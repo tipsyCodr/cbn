@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
             'password'=> bcrypt('adminPassword@123'),
             'role' => 'admin',
         ]);
+        
+        // Run the NotificationSeeder to create test notifications
+        $this->call([
+            NotificationSeeder::class,
+        ]);
     }
 }

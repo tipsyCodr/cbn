@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\OneToOne; // Import the OneToOne model
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\User; // Import the User model
 
@@ -28,6 +29,9 @@ class OneToOneController extends Controller
            $data['user_id'] = $request->user()->id; // Set the user ID
 
            $otoRequest = OneToOne::create($data); // Create a new OneToOne request
+           
+           // Create notification for the recipient
+           NotificationService::createOneToOneNotification($otoRequest);
 
            return response()->json(['oto_request' => $otoRequest], 201);
        } catch (\Exception $e) {

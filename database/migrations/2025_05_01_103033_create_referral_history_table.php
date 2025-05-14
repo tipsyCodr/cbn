@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('from');
             $table->string('to');
             $table->enum('type', ['oto','referral','tyfcb','ceu'])->nullable();
+            $table->unsignedBigInteger('related_id')->nullable();
+            $table->string('title')->nullable();
+            $table->text('message')->nullable();
             $table->boolean('read')->default(false);
             $table->boolean('cleared')->default(false);
             $table->timestamps();

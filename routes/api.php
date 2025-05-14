@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\OneToOneController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\ThankYouController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +36,14 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('get-profile', [App\Http\Controllers\Api\UserController::class, 'getProfile'])->name('get.profile');
     
-
+    // Notification Routes
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::get('/unread-count', [NotificationController::class, 'getUnreadCount'])->name('unread-count');
+        Route::post('/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+        Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+        Route::post('/clear/{id}', [NotificationController::class, 'clearNotification'])->name('clear');
+    });
     
     // Referral Routes
     Route::prefix('referrals')->name('referrals.')->group(function () {

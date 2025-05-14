@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ThankYou;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
+
 class ThankYouController extends Controller
 {
     /**
@@ -40,6 +42,9 @@ class ThankYouController extends Controller
             $data['from'] = $request->user()->id;
             
             $thankYou = ThankYou::create($data);
+            
+            // Create notification for the recipient
+            NotificationService::createThankYouNotification($thankYou);
             
             return response()->json([
                 'status' => 'success',

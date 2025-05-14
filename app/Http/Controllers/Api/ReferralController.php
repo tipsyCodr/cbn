@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Referral;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
+
 class ReferralController extends Controller
 {
     /**
@@ -40,6 +42,9 @@ class ReferralController extends Controller
             $data['from'] = $request->user()->id;
             
             $referral = Referral::create($data);
+            
+            // Create notification for the recipient
+            NotificationService::createReferralNotification($referral);
             
             return response()->json([
                 'status' => 'success',
