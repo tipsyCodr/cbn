@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ThankYou;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ThankYouController extends Controller
 {
@@ -17,7 +18,7 @@ class ThankYouController extends Controller
         try {
             // Get thank you records for the authenticated user
             $thankYou = ThankYou::with('user:id,name')->where('from', $request->user()->id)->get();
-            
+
             return response()->json([
                 'status' => 'success',
                 'data' => $thankYou
@@ -34,18 +35,18 @@ class ThankYouController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request):JsonResponse
     {
         try{
             // Merge the authenticated user ID with the request data
             $data = $request->all();
             $data['from'] = $request->user()->id;
-            
+
             $thankYou = ThankYou::create($data);
-            
+
             // Create notification for the recipient
             NotificationService::createThankYouNotification($thankYou);
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thank you request created successfully',
@@ -63,7 +64,7 @@ class ThankYouController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, $id):JsonResponse
     {
        try {
            // Find the record that belongs to the authenticated user
@@ -71,14 +72,14 @@ class ThankYouController extends Controller
                 ->orWhere('from', $request->user()->id)
                 ->orWhere('to', $request->user()->id)
                 ->first();
-           
+
            if (!$thankYou) {
                return response()->json([
                    'status' => 'error',
                    'message' => 'Thank You request not found'
                ], 404);
            }
-           
+
            return response()->json([
                'status' => 'success',
                'data' => $thankYou
@@ -96,34 +97,34 @@ class ThankYouController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request):JsonResponse
     {
         try{
             // Get the id from the request
             $id = $request->input('id');
-            
+
             if (!$id) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'ID is required'
                 ], 400);
             }
-            
-            // Find the thank you record that belongs to the authenticated user
+
+            // Find the thank-you record that belongs to the authenticated user
             $thankYou = ThankYou::where('id', $id)
                 ->where('from', $request->user()->id)
                 ->first();
-            
+
             if(!$thankYou){
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Thank You request not found or not authorized'
                 ], 404);
             }
-            
+
             // Update the record
-            $thankYou->update($request->except(['id', 'user_id']));
-            
+            $thankYou->update($request->except(['id', 'user_id']), true);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thank You request updated successfully',
@@ -142,32 +143,32 @@ class ThankYouController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request):JsonResponse
     {
         try {
             $id = $request->input('id');
-            
+
             if (!$id) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'ID is required'
                 ], 400);
             }
-            
-            // Find the thank you record that belongs to the authenticated user
+
+            // Find the thank-you record that belongs to the authenticated user
             $thankYou = ThankYou::where('id', $id)
                 ->where('from', $request->user()->id)
                 ->first();
-            
+
             if (!$thankYou) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Thank You request not found or not authorized'
                 ], 404);
             }
-            
+
             $thankYou->delete();
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thank You Request deleted successfully'

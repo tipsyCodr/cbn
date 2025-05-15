@@ -6,9 +6,9 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
-});
-Route::get('membership',['UserController::form']);
-Route::get('membership/register',['UserController::store']);
+})->name('home');
+Route::get('membership',[UserController::class,'form'])->name('membership');
+Route::post('membership/register',[UserController::class, 'store'])->name('membership.register');
 
 Route::get('privacy', function (){
     return view('privacy');
