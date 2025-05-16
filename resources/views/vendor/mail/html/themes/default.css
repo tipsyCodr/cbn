@@ -201,7 +201,7 @@ img {
 }
 
 .table td {
-    color: #74787e;
+    color: #7042218
     font-size: 15px;
     line-height: 18px;
     margin: 0;
@@ -271,12 +271,12 @@ img {
 
 .panel-content {
     background-color: #042218;
-    color: #718096;
+    color: #042218;
     padding: 16px;
 }
 
 .panel-content p {
-    color: #718096;
+    color: #042218;
 }
 
 .panel-item {
