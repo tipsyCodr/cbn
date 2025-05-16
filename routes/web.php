@@ -20,3 +20,7 @@ Route::get('privacy', function (){
 Route::get('csae', function (){
     return view('csae');
 })->name('csae');
+
+Route::get('app-info', function (){
+    return view('app-info');
+})->name('app.info');
