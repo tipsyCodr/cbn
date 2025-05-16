@@ -44,7 +44,13 @@ class VisitorRegistered extends Notification
             // ->line('💰 Meeting Fee: ₹500 (Including Breakfast)')
             ->line('This is a great opportunity to:')
             ->line('✅ Network with like-minded business owners')
-            ->line('✅ Present your business to potential referrers');
+            ->line('✅ Present your business to potential referrers')
+            ->line('✅ Learn from fellow entrepreneurs')
+            ->line('✅ Explore valuable business growth opportunities')
+            ->line('Limited Seats!')
+            ->line('Please confirm your attendance by replying to this message or calling [Insert Contact Number].')
+            ->line('Let’s build a strong Chhattisgarhi business community together.')
+            ->line('CBN – Local Business, Stronger Together.');
     }
 
     /**
