@@ -28,8 +28,8 @@
             <input type="text" name="company" id="company" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter your company name">
         </div>
         <div class="mb-4">
-            <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
-            <input type="text" name="position" id="position" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter your position">
+            <label for="position" class="block text-sm font-medium text-gray-700">Business Category</label>
+            <input type="text" name="position" id="position" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter your business category">
         </div>
     
         <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Register</button>
