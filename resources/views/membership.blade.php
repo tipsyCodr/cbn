@@ -1,5 +1,14 @@
 <x-app>
     <div class="content bg-emerald-900 p-4" style="background-image: url('{{ asset('img/poster.jpg') }}');background-size: cover;background-repeat: no-repeat;" >
+        @if ($errors->any())
+            <div class="bg-red-500 text-white p-4 rounded-md mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="max-w-6xl mx-auto  flex">
             <div class=" w-full md:w-1/2">
