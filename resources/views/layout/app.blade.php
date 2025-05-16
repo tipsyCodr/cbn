@@ -13,12 +13,13 @@
         </style>
     @endif
 </head>
-<body class="bg-gray-50 text-gray-800 leading-relaxed">
+    <body class="bg-gray-50 text-gray-800 leading-relaxed">
         <x-navigation />
-    <div class="max-w-2xlxl">
-        {{$slot}}
-    </div>
+        <div class="max-w-2xlxl">
+            {{$slot}}
+        </div>
 
+        <x-footer />
 
-</body>
+    </body>
 </html>

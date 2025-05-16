@@ -38,12 +38,21 @@ class MemberJoined extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Welcome to CBN Group.')
-            ->line('Here are your login credentials:')
-            ->line('Email: ' . $notifiable->email)
-            ->line('Password: ' . $this->un_en_password)
-            ->action('App Link for Logging in', url('https://play.google.com/store/apps/details?id=com.cbn.app'))
-            ->line('Thank you for registering as a member!');
+            ->line('📲 CBN जुड़ाव – मोबाइल ऐप और वेब लॉगिन जानकारी')
+            ->line('नमस्कार CBN सदस्य,')
+            ->line('आपके नेटवर्किंग अनुभव ला अउ बेहतर बनाय बर, हम लांच करे हन CBN जुड़ाव मोबाइल ऐप और वेब पोर्टल – जिहां आप अपन व्यवसाय प्रोफाइल, रेफरल, मीटिंग जानकारी अउ नेटवर्क म सदस्य मन के जानकारी एक जगह देख सकथो।')
+            ->line('👉 मोबाइल ऐप डाउनलोड करें:')
+            ->line('📱 CBN जुड़ाव App')
+            ->action('🔗Google Play Store लिंक डारव', url('https://play.google.com/store/apps/details?id=com.cbn.app'))
+            ->line('(जल्द ही iOS वर्जन घलो आवत हे)')
+            ->line('🔐 लॉगिन डिटेल्स:')
+            ->line('👤 यूज़रनेम: ' . $notifiable->email)
+            ->line('🔑 पासवर्ड: ' . $this->un_en_password)
+            ->line('📌 लॉगिन करके आप कर सकथो:')
+            ->line('✅ प्रोफाइल अपडेट')
+            ->line('✅ रेफरल भेजना और ट्रैक करना')
+            ->line('✅ मीटिंग अपडेट और अलर्ट देखना')
+            ->line('✅ दूसर सदस्य संग डायरेक्ट संपर्क');
     }
 
     /**
