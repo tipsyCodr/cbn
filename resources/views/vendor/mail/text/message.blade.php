@@ -3,6 +3,7 @@
     <x-slot:header>
         <x-mail::header :url="config('app.url')">
             {{ config('app.name') }}
+            <img src="{{ asset('img/logo.png') }}" class="logo" alt="CBN Logo">
         </x-mail::header>
     </x-slot:header>
 
