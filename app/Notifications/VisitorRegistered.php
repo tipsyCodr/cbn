@@ -36,21 +36,21 @@ class VisitorRegistered extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('📣 You\'re Invited!')
-            ->line('Join us for an exciting CBN - Chhattisgarh Business Network meeting where entrepreneurs and professionals connect, collaborate, and grow together!')
-            // ->line('🗓 Date: [Insert Date]')
-            // ->line('🕘 Time: [Insert Time]')
-            // ->line('📍 Venue: [Insert Venue Name & Address]')
-            // ->line('💰 Meeting Fee: ₹500 (Including Breakfast)')
-            ->line('This is a great opportunity to:')
-            ->line('✅ Network with like-minded business owners')
-            ->line('✅ Present your business to potential referrers')
-            ->line('✅ Learn from fellow entrepreneurs')
-            ->line('✅ Explore valuable business growth opportunities')
-            ->line('Limited Seats!')
-            ->line('Please confirm your attendance by replying to this message or calling [Insert Contact Number].')
-            ->line('Let’s build a strong Chhattisgarhi business community together.')
-            ->line('CBN – Local Business, Stronger Together.');
+            ->line('📣 बने के निहोरा हे!')
+            ->line('आप मन ला आमंत्रित करत हन CBN - छत्तीसगढ़ बिजनेस नेटवर्क के एक खास मीटिंग म, जिहां व्यवसायी मन मिलथें, सींखथें अउ एक दूसर ला मदद करथें।')
+            // ->line('🗓 तारीख: [तारीख डारव]')
+            // ->line('🕘 टाइम: [टाइम डारव]')
+            // ->line('📍 जगह: [जगह डारव]')
+            // ->line('💰 फीस: ₹500 (नास्ता समेते)')
+            ->line('ए मीटिंग म आप मन ला मिलही:')
+            ->line('✅ दूसर व्यवसायी संग जान-पहिचान')
+            ->line('✅ अपन व्यवसाय के प्रस्तुती के मौका')
+            ->line('✅ रेफरल ले व्यापार बढ़ाय के तरीका')
+            ->line('✅ नवा बात सींखे के मौका')
+            ->line('सीट सीमित हे!')
+            // ->line('कृपा करके अपन आवक के पक्का जानकारी देवव – [मोबाइल नंबर डारव] म कॉल करके या एही मेसेज म रिप्लाय करके।')
+            ->line('CBN – लोकल व्यापार, सबले मजबूत संग')
+            ->line('चलव, अपन छत्तीसगढ़ के व्यवसाय ला एक संगे आगे बढ़ावन।');
     }
 
     /**
