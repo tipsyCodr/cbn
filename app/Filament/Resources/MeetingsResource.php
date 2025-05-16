@@ -38,7 +38,6 @@ class MeetingsResource extends Resource
                     ->type('number')
                     ->nullable(),
                 Forms\Components\TextInput::make('speakers')
-                    ->type('number')
                     ->nullable(),
             ]);
     }
