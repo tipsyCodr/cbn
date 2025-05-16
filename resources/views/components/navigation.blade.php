@@ -15,18 +15,18 @@
                     <a href="{{ route('members') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('members') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Members
                     </a> --}}
-                    <a href="{{ route('membership') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('membership') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
+                    <a href="{{ route('membership') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('membership') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Membership
                     </a>
-                    <a href="{{ route('visitor') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('visitor') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
+                    <a href="{{ route('visitor') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('visitor') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Visitor
                     </a>
-                    <a href="{{ route('privacy') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('about') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
+                    {{-- <a href="{{ route('privacy') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('about') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Privacy Policy
                     </a>
                     <a href="{{ route('csae') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('csae') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Child Safety Policy
-                    </a>
+                    </a> --}}
                 </nav>
             </div>
             <div class="hidden md:ml-6 md:flex md:items-center">
