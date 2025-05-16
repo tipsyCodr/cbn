@@ -26,7 +26,7 @@
             text-align: center;
             padding: 15px;
             font-size: 12px;
-            color: #777;
+            color: #2f2f2f;
             border-top: 1px solid #ddd;
         }
         .button {
