@@ -177,49 +177,40 @@ class UserController extends Controller
             $twelveMonthsAgo = $now->copy()->subMonths(12);
             
             // Referrals stats
-            $referralsThisWeek = Referral::where('from', $user->id)
-                ->where('created_at', '>=', $startOfWeek)
+            $referralsThisWeek = Referral::where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $referralsSixMonths = Referral::where('from', $user->id)
-                ->where('created_at', '>=', $sixMonthsAgo)
+            $referralsSixMonths = Referral::where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
-            $referralsTwelveMonths = Referral::where('from', $user->id)
-                ->where('created_at', '>=', $twelveMonthsAgo)
+            $referralsTwelveMonths = Referral::where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $referralsLifetime = Referral::where('from', $user->id)->count();
+            $referralsLifetime = Referral::count();
             
             // TYFCB stats
-            $tyfcbThisWeek = ThankYou::where('from', $user->id)
-                ->where('created_at', '>=', $startOfWeek)
+            $tyfcbThisWeek = ThankYou::where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $tyfcbSixMonths = ThankYou::where('from', $user->id)
-                ->where('created_at', '>=', $sixMonthsAgo)
+            $tyfcbSixMonths = ThankYou::where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
-            $tyfcbTwelveMonths = ThankYou::where('from', $user->id)
-                ->where('created_at', '>=', $twelveMonthsAgo)
+            $tyfcbTwelveMonths = ThankYou::where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $tyfcbLifetime = ThankYou::where('from', $user->id)->count();
+            $tyfcbLifetime = ThankYou::count();
             
             // One-to-One stats
-            $otoThisWeek = OneToOne::where('user_id', $user->id)
-                ->where('created_at', '>=', $startOfWeek)
+            $otoThisWeek = OneToOne::where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $otoSixMonths = OneToOne::where('user_id', $user->id)
-                ->where('created_at', '>=', $sixMonthsAgo)
+            $otoSixMonths = OneToOne::where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
-            $otoTwelveMonths = OneToOne::where('user_id', $user->id)
-                ->where('created_at', '>=', $twelveMonthsAgo)
+            $otoTwelveMonths = OneToOne::where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $otoLifetime = OneToOne::where('user_id', $user->id)->count();
+            $otoLifetime = OneToOne::count();
             
             // Return user details
             return response()->json([
@@ -419,4 +410,6 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+  
 }

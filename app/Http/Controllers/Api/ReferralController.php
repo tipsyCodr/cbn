@@ -30,7 +30,24 @@ class ReferralController extends Controller
             ], 500);
         }
     }
-
+    public function getAllReferralsCount(Request $request)
+    {
+        try {
+            // Get referrals for the authenticated user
+            $referrals = Referral::all();
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => $referrals
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch referrals',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
