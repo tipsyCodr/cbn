@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserResource extends Resource
 {
@@ -125,6 +126,20 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->visible(fn () => Auth::user()?->role !== 'moderator'),
+                    Tables\Actions\BulkAction::make('setDueDate')
+                        ->label('Set Due Date')
+                        ->icon('heroicon-o-calendar')
+                        ->form([
+                            Forms\Components\DatePicker::make('due_date')
+                                ->label('Due Date')
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $records->each(function ($record) use ($data) {
+                                $record->update(['due_date' => $data['due_date']]);
+                            });
+                        })
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }
