@@ -25,7 +25,7 @@ class MeetingController extends Controller
             }
             
             // Add tyfcbThisMonth to meeting object
-            $meeting->tyfcbThisMonth = '$' . number_format(ThankYou::whereMonth('created_at', date('m'))->sum('amount'), 2);
+            $meeting->tyfcbThisMonth =  number_format(ThankYou::whereMonth('created_at', date('m'))->sum('amount'), 2);
             
             return response()->json([
                 'success' => true,
