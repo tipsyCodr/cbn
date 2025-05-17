@@ -15,9 +15,11 @@ class MeetingController extends Controller
     public function getNextMeeting(Request $request)
     {
         try {
-            $meeting = Meeting::getNextMeeting();
-            $tyfcbThisMonth = ThankYou::whereMonth('created_at', date('m'))->sum('amount');    
-            if (!$meeting) {
+            $meetingData = [
+                'meeting' => Meeting::getNextMeeting(),
+                'tyfcbThisMonth' => ThankYou::whereMonth('created_at', date('m'))->sum('amount')
+            ];
+            if (!$meetingData) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No upcoming meetings found'
@@ -26,8 +28,7 @@ class MeetingController extends Controller
             
             return response()->json([
                 'success' => true,
-                'data' => $meeting,
-                'tyfcbThisMonth' => $tyfcbThisMonth,
+                'data' => $meetingData,
                 'message' => 'Next meeting retrieved successfully'
             ]);
             
