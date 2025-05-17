@@ -190,15 +190,15 @@ class UserController extends Controller
             
             // TYFCB stats
             $tyfcbThisWeek = ThankYou::where('created_at', '>=', $startOfWeek)
-                ->count();
+                ->sum('amount');
                 
             $tyfcbSixMonths = ThankYou::where('created_at', '>=', $sixMonthsAgo)
-                ->count();
+                ->sum('amount');
                 
             $tyfcbTwelveMonths = ThankYou::where('created_at', '>=', $twelveMonthsAgo)
-                ->count();
+                ->sum('amount');
                 
-            $tyfcbLifetime = ThankYou::count();
+            $tyfcbLifetime = ThankYou::sum('amount');
             
             // One-to-One stats
             $otoThisWeek = OneToOne::where('created_at', '>=', $startOfWeek)
