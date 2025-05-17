@@ -190,7 +190,7 @@ class UserController extends Controller
             
             // TYFCB stats
             $tyfcbThisWeek = ThankYou::where('created_at', '>=', $startOfWeek)
-                ->sum('amount');
+                ->count();
                 
             $tyfcbSixMonths = ThankYou::where('created_at', '>=', $sixMonthsAgo)
                 ->sum('amount');
