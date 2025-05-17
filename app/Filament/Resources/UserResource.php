@@ -67,9 +67,12 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('profile_photo')
                     ->nullable(),
-                // Forms\Components\TextInput::make('password')
-                //     ->nullable()
-                //     ->maxLength(255),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => !empty($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->label(fn (string $operation) => $operation === 'edit' ? 'New Password' : 'Password')
+                    ->nullable(),
                 Forms\Components\DatePicker::make('due_date')
                     ->nullable(),
                 Forms\Components\Select::make('active')
