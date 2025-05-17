@@ -264,7 +264,7 @@ class UserController extends Controller
                             'twelve_months' => $tyfcbTwelveMonths,
                             'lifetime' => $tyfcbLifetime
                         ],
-                        'revenue' => [
+                        'revenue_received' => [
                             'six_months' => $revenueSixMonths,
                             'twelve_months' => $revenueTwelveMonths,
                             'lifetime' => $revenueLifetime,
