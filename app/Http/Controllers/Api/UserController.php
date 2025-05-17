@@ -206,6 +206,17 @@ class UserController extends Controller
             
             $tyfcbLifetime = ThankYou::where('from', $user->id)->sum('amount'); // Assuming 'amount' is the column to total
             
+            //Revenue Recieved Data
+            $revenueSixMonths = ThankYou::where('to', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)
+                ->sum('amount'); // Assuming 'amount' is the column to total
+            
+            $revenueTwelveMonths = ThankYou::where('to', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->sum('amount'); // Assuming 'amount' is the column to total
+            
+            $revenueLifetime = ThankYou::where('to', $user->id)->sum('amount'); // Assuming 'amount' is the column to total
+
             // One-to-One stats
             $otoThisWeek = OneToOne::where('user_id', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
@@ -252,6 +263,11 @@ class UserController extends Controller
                             'six_months' => $tyfcbSixMonths,
                             'twelve_months' => $tyfcbTwelveMonths,
                             'lifetime' => $tyfcbLifetime
+                        ],
+                        'revenue' => [
+                            'six_months' => $revenueSixMonths,
+                            'twelve_months' => $revenueTwelveMonths,
+                            'lifetime' => $revenueLifetime,
                         ],
                         'one_to_one' => [
                             'this_week' => $otoThisWeek,
