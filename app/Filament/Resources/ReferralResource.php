@@ -54,8 +54,7 @@ class ReferralResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->nullable(),
-                Forms\Components\TextInput::make('mobile')
-                    ->required(),
+
                 Forms\Components\Textarea::make('address')
                     ->nullable(),
                 Forms\Components\Textarea::make('comments')
