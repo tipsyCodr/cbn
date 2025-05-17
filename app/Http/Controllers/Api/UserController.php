@@ -198,13 +198,13 @@ class UserController extends Controller
                 
             $tyfcbSixMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
-                ->count();
-                
+                ->sum('amount'); // Assuming 'amount' is the column to total
+            
             $tyfcbTwelveMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
-                ->count();
-                
-            $tyfcbLifetime = ThankYou::where('from', $user->id)->count();
+                ->sum('amount'); // Assuming 'amount' is the column to total
+            
+            $tyfcbLifetime = ThankYou::where('from', $user->id)->sum('amount'); // Assuming 'amount' is the column to total
             
             // One-to-One stats
             $otoThisWeek = OneToOne::where('user_id', $user->id)
