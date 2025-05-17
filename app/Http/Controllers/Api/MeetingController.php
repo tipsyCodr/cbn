@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
+use App\Models\ThankYou;
 use Illuminate\Http\Request;
 
 class MeetingController extends Controller
@@ -15,7 +16,7 @@ class MeetingController extends Controller
     {
         try {
             $meeting = Meeting::getNextMeeting();
-            
+            $tyfcbThisMonth = ThankYou::whereMonth('created_at', date('m'))->sum('amount');    
             if (!$meeting) {
                 return response()->json([
                     'success' => false,
@@ -26,8 +27,10 @@ class MeetingController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $meeting,
+                'tyfcbThisMonth' => $tyfcbThisMonth,
                 'message' => 'Next meeting retrieved successfully'
             ]);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
