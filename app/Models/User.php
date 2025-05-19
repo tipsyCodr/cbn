@@ -34,7 +34,8 @@ class User extends Authenticatable
         'password',
         'due_date',
         'active',
-        'role'
+        'role',
+        'chapter_id'
     ];
 
     /**
@@ -87,4 +88,9 @@ class User extends Authenticatable
         return $this->hasMany(ThankYou::class,'from');
     }
  
+    public function chapter()
+    {
+        return $this->belongsToMany(Chapter::class);
+    }
+
 }
