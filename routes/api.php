@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('home', [UserController::class, 'home'])->name('user.home');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/by-chapter', [UserController::class, 'usersByChapter'])->name('users.by.chapter');
+    Route::get('worldwide-users', [UserController::class, 'globalUsers'])->name('users.global');
     Route::get('requests', [UserController::class, 'getAllRequests'])->name('user.requests');
 
     
