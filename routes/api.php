@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ThankYouController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', function (Request $request) {
         return $request->user();
     })->name('user');
+    
+    Route::get('user/by-chapter', function (Request $request) {
+        $user = $request->user();
+        $chapterId = $user->chapter_id;
+        $users = User::where('chapter_id', $chapterId)->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $users
+        ]);
+    })->name('user.by.chapter');
+
     Route::get('home', [UserController::class, 'home'])->name('user.home');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('requests', [UserController::class, 'getAllRequests'])->name('user.requests');
