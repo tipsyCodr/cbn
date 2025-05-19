@@ -39,6 +39,12 @@ class UserController extends Controller
         return response()->json(['users' => $users], 200);
     }
 
+    public function getCategories(Request $request)
+    {
+        $categories = User::whereNotNull('category')->distinct()->pluck('category');
+        return response()->json(['categories' => $categories], 200);
+    }
+    
     public function profile(){
         $user = auth()->user();
         return response()->json([
