@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ThankYou;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +33,34 @@ class ThankYouController extends Controller
         }
     }
 
+    public function ThankYouRequestByChapter(Request $request):JsonResponse{
+        try{
+            $chapterId = $request->input('chapter_id');
+
+            if(!$chapterId){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Chapter ID is required'
+                ], 400);
+            }
+
+            $users = User::where('chapter_id', $chapterId)->get();
+
+            $thankYouRequests = ThankYou::whereIn('from', $users->pluck('id'))->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $thankYouRequests
+            ], 200);
+        } catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch thank you requests',
+                
+            ], 500);
+        }
+    }
+    
     /**
      * Store a newly created resource in storage.
      */

@@ -15,7 +15,9 @@ class MeetingController extends Controller
     public function getNextMeeting(Request $request)
     {
         try {
+            $user = $request->user();
             $meeting = Meeting::getNextMeeting();
+            $chapterID = $user->chapter_id;
             
             if (!$meeting) {
                 return response()->json([
@@ -25,7 +27,7 @@ class MeetingController extends Controller
             }
             
             // Add tyfcbThisMonth to meeting object
-            $meeting->tyfcbThisMonth =  number_format(ThankYou::whereMonth('created_at', date('m'))->sum('amount'), 2);
+            $meeting->tyfcbThisMonth =  number_format(ThankYou::whereMonth('created_at', date('m'))->where('chapter_id',$chapterID)->sum('amount'), 2);
             
             return response()->json([
                 'success' => true,

@@ -155,6 +155,30 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully', 'user' => $user], 200);
     }
 
+    public function getAmountByChapter($chapterId){
+        try{
+            // $chapterId = $request->input('chapter_id');
+
+            if(!$chapterId){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Chapter ID is required'
+                ], 400);
+            }
+
+            $users = User::where('chapter_id', $chapterId)->get();
+
+            $thankYouRequestsAmount = ThankYou::whereIn('from', $users->pluck('id'))->sum('amount');
+
+            return $thankYouRequestsAmount;
+
+        } catch(Exception $e){
+            return  'Error: Failed to fetch thank you requests';
+           
+        }
+
+    }
+
     /**
      * Fetch authenticated user's details
      */
@@ -175,7 +199,7 @@ class UserController extends Controller
             $startOfWeek = $now->startOfWeek();
             $sixMonthsAgo = $now->copy()->subMonths(6);
             $twelveMonthsAgo = $now->copy()->subMonths(12);
-            
+
             // Referrals stats
             $referralsThisWeek = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
@@ -278,7 +302,7 @@ class UserController extends Controller
                     ]
                 ]
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch user details',
