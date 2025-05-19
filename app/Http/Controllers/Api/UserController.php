@@ -29,10 +29,7 @@ class UserController extends Controller
         $user = $request->user();
         $chapterId = $user->chapter_id;
         $users = User::where('chapter_id', $chapterId)->get();
-        return response()->json([
-            'status' => 'success',
-            'data' => $users
-        ], 200);
+        return response()->json(['users' => $users], 200);
     }
 
     public function profile(){
