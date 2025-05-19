@@ -28,18 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     })->name('user');
     
-    Route::get('user/by-chapter', function (Request $request) {
-        $user = $request->user();
-        $chapterId = $user->chapter_id;
-        $users = User::where('chapter_id', $chapterId)->get();
-        return response()->json([
-            'status' => 'success',
-            'data' => $users
-        ]);
-    })->name('user.by.chapter');
 
     Route::get('home', [UserController::class, 'home'])->name('user.home');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/by-chapter', [UserController::class, 'usersByChapter'])->name('users.by.chapter');
     Route::get('requests', [UserController::class, 'getAllRequests'])->name('user.requests');
 
     

@@ -24,6 +24,16 @@ class UserController extends Controller
         $users = User::where('active', 1)->where('role', 'user')->get();
         return response()->json(['users' => $users], 200);
     }
+    public function usersByChapter(Request $request)
+    {
+        $user = $request->user();
+        $chapterId = $user->chapter_id;
+        $users = User::where('chapter_id', $chapterId)->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $users
+        ], 200);
+    }
 
     public function profile(){
         $user = auth()->user();
