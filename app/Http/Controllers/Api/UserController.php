@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         $user = $request->user();
         $chapterId = $user->chapter_id;
-        $users = User::where('chapter_id', $chapterId)->get();
+        $users = User::where('chapter_id', $chapterId)->where('role', 'user')->get();
         return response()->json(['users' => $users], 200);
     }
 
