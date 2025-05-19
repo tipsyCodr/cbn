@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use App\Models\ThankYou;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MeetingController extends Controller
@@ -27,7 +28,8 @@ class MeetingController extends Controller
             }
             
             // Add tyfcbThisMonth to meeting object
-            $meeting->tyfcbThisMonth =  number_format(ThankYou::whereMonth('created_at', date('m'))->where('chapter_id',$chapterID)->sum('amount'), 2);
+            $userIds = User::where('chapter_id', $chapterID)->pluck('id');
+            $meeting->tyfcbThisMonth = number_format(ThankYou::whereMonth('created_at', date('m'))->whereIn('from', $userIds)->sum('amount'), 2);
             
             return response()->json([
                 'success' => true,
