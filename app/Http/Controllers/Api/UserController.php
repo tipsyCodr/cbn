@@ -299,7 +299,7 @@ class UserController extends Controller
                 ->count();
                 
             $visitorsLifetime = OneToOne::where('met_with', $user->id)->count();
-            
+
             // Return user details
             return response()->json([
                 'status' => 'success',
@@ -347,6 +347,12 @@ class UserController extends Controller
                             'six_months' => $otoSixMonths,
                             'twelve_months' => $otoTwelveMonths,
                             'lifetime' => $otoLifetime
+                        ],
+                        'visitors' => [
+                            'this_week' => $visitorsThisWeek,
+                            'six_months' => $visitorsSixMonths,
+                            'twelve_months' => $visitorsTwelveMonths,
+                            'lifetime' => $visitorsLifetime
                         ]
                     ]
                 ]
