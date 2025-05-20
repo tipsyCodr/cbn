@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Referral;
 use App\Models\ThankYou; // TYFCB model
 use App\Models\OneToOne; // One-to-one model
-use App\Models\Visitor;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -287,17 +286,20 @@ class UserController extends Controller
                 
             $otoLifetime = OneToOne::where('user_id', $user->id)->count();
             
-            $visitorsThisWeek = Visitor::where('created_at', '>=', $startOfWeek)
+            $visitorsThisWeek = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $startOfWeek)
                 ->count();
                 
-            $visitorsSixMonths = Visitor::where('created_at', '>=', $sixMonthsAgo)  
+            $visitorsSixMonths = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)  
                 ->count();
                 
-            $visitorsTwelveMonths = Visitor::where('created_at', '>=', $twelveMonthsAgo)
+            $visitorsTwelveMonths = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $visitorsLifetime = Visitor::count();
- 
+            $visitorsLifetime = OneToOne::where('met_with', $user->id)->count();
+
             // Return user details
             return response()->json([
                 'status' => 'success',
