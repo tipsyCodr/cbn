@@ -22,6 +22,14 @@ class ResetPasswordController extends Controller
     }
 
     /**
+     * Display the password reset success view.
+     */
+    public function showResetSuccessForm(): View
+    {
+        return view('auth.reset-password-success');
+    }
+
+    /**
      * Reset the given user's password.
      */
     public function reset(Request $request): RedirectResponse
@@ -48,11 +56,11 @@ class ResetPasswordController extends Controller
             }
         );
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
+        // If the password was successfully reset, we will redirect the user to
+        // the password reset success page. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('membership')->with('status', __($status))
+                    ? redirect()->route('password.reset.success')
                     : back()->withErrors(['email' => [__($status)]]);
     }
 } 
