@@ -27,7 +27,7 @@ class TopUsers extends BaseWidget
         
         return $table
             ->query(
-                User::query()
+                User::query()->where('role', 'user')
             )
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
