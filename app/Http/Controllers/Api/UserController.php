@@ -224,17 +224,27 @@ class UserController extends Controller
             $referralsThisWeek = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
                 ->count();
+
+            $referralsReceivedSixMonth = Referral::where('to', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)
+                ->count();
                 
             $referralsSixMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
                 
+            $referralsReceivedTwelveMonth = Referral::where('to', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->count();
+
             $referralsTwelveMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
             $referralsLifetime = Referral::where('from', $user->id)->count();
-            
+
+            $referralsReceivedLifetime = Referral::where('to', $user->id)->count();
+
             // TYFCB stats
             $tyfcbThisWeek = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
@@ -301,6 +311,11 @@ class UserController extends Controller
                             'six_months' => $referralsSixMonths,
                             'twelve_months' => $referralsTwelveMonths,
                             'lifetime' => $referralsLifetime
+                        ],
+                        'referrals_received' => [
+                            'six_months' => $referralsReceivedSixMonth,
+                            'twelve_months' => $referralsReceivedTwelveMonth,
+                            'lifetime' => $referralsReceivedLifetime
                         ],
                         'tyfcb' => [
                             'this_week' => $tyfcbThisWeek,
