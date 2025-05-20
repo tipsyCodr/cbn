@@ -286,6 +286,20 @@ class UserController extends Controller
                 
             $otoLifetime = OneToOne::where('user_id', $user->id)->count();
             
+            $visitorsThisWeek = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $startOfWeek)
+                ->count();
+                
+            $visitorsSixMonths = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $sixMonthsAgo)  
+                ->count();
+                
+            $visitorsTwelveMonths = OneToOne::where('met_with', $user->id)
+                ->where('created_at', '>=', $twelveMonthsAgo)
+                ->count();
+                
+            $visitorsLifetime = OneToOne::where('met_with', $user->id)->count();
+            
             // Return user details
             return response()->json([
                 'status' => 'success',
