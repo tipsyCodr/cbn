@@ -35,6 +35,7 @@ class TopUsers extends BaseWidget
                 ->getStateUsing(function (User $record): int {
                     $userIds = User::where('chapter_id', $record->id)
                         ->where('active', 1)
+                        ->where('role', 'user')
                         ->pluck('id')
                         ->toArray();
                         
