@@ -28,14 +28,14 @@ class UserController extends Controller
     {
         $user = $request->user();
         $chapterId = $user->chapter_id;
-        $users = User::where('chapter_id', $chapterId)->where('role', 'user')->get();
+        $users = User::where('chapter_id', $chapterId)->where('role', 'user')->where('id', '!=', $user->id)->get();
         return response()->json(['users' => $users], 200);
     }
     public function globalUsers(Request $request)
     {
         $user = $request->user();
         $chapterId = $user->chapter_id;
-        $users = User::where('chapter_id', $chapterId)->where('role', 'user')->get();
+        $users = User::where('chapter_id', '!=', $chapterId)->where('role', 'user')->get();
         return response()->json(['users' => $users], 200);
     }
 
