@@ -296,8 +296,8 @@ class UserController extends Controller
             $visitorsTwelveMonths = Visitor::where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
                 
-            $visitorsLifetime = Visitor::where('met_with', $user->id)->count();
-
+            $visitorsLifetime = Visitor::count();
+ 
             // Return user details
             return response()->json([
                 'status' => 'success',
