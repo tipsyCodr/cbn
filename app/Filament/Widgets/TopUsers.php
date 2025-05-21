@@ -31,11 +31,12 @@ class TopUsers extends BaseWidget
             )
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('total_requests')->sortable()
+                TextColumn::make('total_requests')
+                    ->label('Total Requests')
+                    ->sortable()
                     ->getStateUsing(function (User $record): int {
-                        $userIds = User::where('chapter_id', $record->chapter_id)
+                        $userIds = User::where('chapter_id', $record->id)
                             ->where('active', 1)
-                            ->where('role', 'user')
                             ->pluck('id')
                             ->toArray();
 
@@ -49,47 +50,43 @@ class TopUsers extends BaseWidget
 
                         return $tyfcb + $referral + $oto;
                     }),
-                TextColumn::make('total_tyfcb')->label('Total TYFCB')->sortable()
+
+                TextColumn::make('total_tyfcb')
+                    ->label('Total TYFCB')
+                    ->sortable()
                     ->getStateUsing(function (User $record): int {
-                        $userIds = User::where('chapter_id', $record->chapter_id)
+                        $userIds = User::where('chapter_id', $record->id)
                             ->where('active', 1)
                             ->pluck('id')
                             ->toArray();
-
-                        if (empty($userIds)) {
-                            return 0;
-                        }
 
                         return ThankYou::whereIn('from', $userIds)->count();
                     }),
 
-                TextColumn::make('total_referrals')->label('Total Referrals')->sortable()
+                TextColumn::make('total_referrals')
+                    ->label('Total Referrals')
+                    ->sortable()
                     ->getStateUsing(function (User $record): int {
-                        $userIds = User::where('chapter_id', $record->chapter_id)
+                        $userIds = User::where('chapter_id', $record->id)
                             ->where('active', 1)
                             ->pluck('id')
                             ->toArray();
-
-                        if (empty($userIds)) {
-                            return 0;
-                        }
 
                         return Referral::whereIn('from', $userIds)->count();
                     }),
 
-                TextColumn::make('total_oto')->label('Total One To One')->sortable()
+                TextColumn::make('total_oto')
+                    ->label('Total One To One')
+                    ->sortable()
                     ->getStateUsing(function (User $record): int {
-                        $userIds = User::where('chapter_id', $record->chapter_id)
+                        $userIds = User::where('chapter_id', $record->id)
                             ->where('active', 1)
                             ->pluck('id')
                             ->toArray();
 
-                        if (empty($userIds)) {
-                            return 0;
-                        }
-
                         return OneToOne::whereIn('user_id', $userIds)->count();
                     }),
+
 
 
             ]);
