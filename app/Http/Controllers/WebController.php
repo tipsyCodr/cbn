@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ExpressionOfInterest;
+use Illuminate\Http\Request;
+
+class WebController extends Controller
+{
+    public function expressionOfInterest()
+    {
+        return view('web.expression-of-interest');
+
+    }
+    public function expressionOfInterestStore(Request $request)
+    {
+       try{ $validated = $request->validate([
+            'form_type' => 'required',
+            'chapter_name' => 'required',
+            'region' => 'required',
+            'invited_by' => 'required',
+            'visit_date' => 'required',
+            'referral_source' => 'required',    
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'company_name' => 'required',
+            'professional_classification' => 'required',
+            'email' => 'required',
+            'mobile' => 'required',
+            'previous_member' => 'required',
+            'experience_rating' => 'required',
+            'product_service_feedback' => 'required',
+            'agreement' => 'required',
+        ]);
+        $name = $validated['first_name'] . ' ' . $validated['last_name'];
+        
+        ExpressionOfInterest::create([
+            'form_type' => $validated['form_type'],
+            'full_name' => $name,
+            'email' => $validated['email'],
+            'mobile' => $validated['mobile'],
+            'chapter_name' => $validated['chapter_name'],
+            'region' => $validated['region'],
+            'invited_by' => $validated['invited_by'],
+            'visit_date' => $validated['visit_date'],
+            'referral_source' => $validated['referral_source'],
+            'experience_rating' => $validated['experience_rating'],
+            'product_service_feedback' => $validated['product_service_feedback'],
+            'company_name' => $validated['company_name'],
+            'professional_classification' => $validated['professional_classification'],
+            'previous_member' => $validated['previous_member'],
+        ]);}
+        catch(\Exception $e){
+            return redirect()->back()->with('error', 'Expression of Interest submission failed '.$e->getMessage());
+        }
+        return redirect()->back()->with('success', 'Expression of Interest submitted successfully');
+    }
+}

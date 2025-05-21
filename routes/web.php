@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -42,3 +43,5 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])
 
 Route::get('reset-password-success', [ResetPasswordController::class, 'showResetSuccessForm'])
     ->name('password.reset.success');
+Route::get('expression-of-interest', [WebController::class,'expressionOfInterest'])->name('expression-of-interest');
+Route::post('expression-of-interest', [WebController::class,'expressionOfInterestStore'])->name('expression-of-interest.store');
