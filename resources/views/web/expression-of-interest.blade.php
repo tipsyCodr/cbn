@@ -1,7 +1,7 @@
 <x-app>
 
     <div class="pt-6 max-w-6xl mx-auto px-4" x-data="{ choice: 'expression_of_interest' }">
-        <h1 class="text-2xl font-bold mb-4">Are you interested in becoming a member of BNI?</h1>
+        <h1 class="text-2xl font-bold mb-4">Are you interested in becoming a member of CBN?</h1>
         <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2">Choose an option</label>
             <div>
