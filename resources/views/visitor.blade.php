@@ -1,4 +1,5 @@
 <x-app>
+        <div class='h-24'>s</div>
 
     <!-- Start Generation Here -->
     <div class="max-w-6xl mx-auto py-10">

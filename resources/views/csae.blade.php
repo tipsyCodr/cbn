@@ -1,5 +1,7 @@
 <x-app>
-    <div class="max-w-4xl mx-auto p-6">
+    <div class="max-w-4xl mx-auto p-6 ">
+
+        <div class='h-24'>s</div>
         <h1 class="text-3xl font-bold mb-4">Child Safety Standards</h1>
 
         <section class="mb-6">

@@ -1,4 +1,6 @@
 <x-app>
+        <div class='h-24'>s</div>
+
     <div class="content bg-emerald-900 p-4" style="background-image: url('{{ asset('img/poster.jpg') }}');background-size: cover;background-repeat: no-repeat;" >
             {{-- @if (session('success'))
                 <div class="bg-green-500 text-white p-4 rounded-md mb-4 max-w-lg mx-auto">
