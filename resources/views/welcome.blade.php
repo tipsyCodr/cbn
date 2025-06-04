@@ -17,13 +17,13 @@
                 
                 <div class="space-y-6">
                     <button @click="paused = !paused"
-                    class="text-sm mt-6 px-4 py-2 bg-white/10 border border-white/20 rounded hover:bg-white/20 transition flex items-center space-x-2">
-                    <span>
-                        <i class="fas fa-play" x-show="paused"></i>
-                        <i class="fas fa-pause" x-show="!paused"></i>
-                    </span>
-                    {{-- <span x-text="paused ? 'Resume Background' : 'Pause Background'"></span> --}}
-                </button>
+                        class="text-sm mt-6 px-4 py-2 bg-white/10 border border-white/20 rounded hover:bg-white/20 transition flex items-center space-x-2">
+                        <span>
+                            <i class="fas fa-play" x-show="paused"></i>
+                            <i class="fas fa-pause" x-show="!paused"></i>
+                        </span>
+                        {{-- <span x-text="paused ? 'Resume Background' : 'Pause Background'"></span> --}}
+                    </button>
                     <h1 class="text-4xl md:text-6xl font-bold leading-tight">
                         Welcome to <span class="text-[#ff8001]">CBN</span>
                     </h1>
@@ -301,7 +301,7 @@
                     </div>
                     </div>
                 </div>
-                <a href="#"
+                <a href="{{ route('visitor') }}"
                     class="text-[#ffffff] bg-[#013f3a] px-6 py-3 rounded-lg inline-block hover:bg-orange-400 transition duration-300 font-bold">
                     <i class="fas fa-ticket-alt mr-2"></i>Reserve Your Seat
                 </a>
@@ -419,7 +419,7 @@
                 <p class="text-xl text-green-100">Take the first step towards expanding your business network</p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-12">
+            <div class="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
                 <div class="space-y-6">
                 <h3 class="text-2xl font-bold">Membership Benefits</h3>
                 <div class="grid grid-cols-1 gap-4">
@@ -439,17 +439,30 @@
                 </div>
 
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20">
-                <form action="#" method="POST" class="space-y-6">
+                <form action="{{ route('membership.register') }}" method="POST" class="space-y-6" enctype='multipart/form-data' >
                     @csrf
+
+                    @if ($errors->any())
+                        <div class="mb-4">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                <ul class="list-disc pl-5">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+                    
                     <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2">Full Name *</label>
-                        <input type="text" name="full_name" required
+                        <input type="text" name="name" required
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">Business Name *</label>
-                        <input type="text" name="business_name" required
+                        <input type="text" name="company" required
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
                     </div>
                     </div>
@@ -457,21 +470,13 @@
                     <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2">Business Category *</label>
-                        <select name="business_category" required
-                        class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                        <option value="">Select Category</option>
-                        <option value="manufacturing">Manufacturing</option>
-                        <option value="retail">Retail</option>
-                        <option value="services">Services</option>
-                        <option value="technology">Technology</option>
-                        <option value="healthcare">Healthcare</option>
-                        <option value="education">Education</option>
-                        <option value="other">Other</option>
-                        </select>
+                        <input type="text" name="category" required
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"
+                            placeholder="Enter your business category">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">Phone Number *</label>
-                        <input type="tel" name="phone" required
+                        <input type="tel" name="mobile" required
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
                     </div>
                     </div>
@@ -484,54 +489,74 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">City / Location *</label>
-                        <input type="text" name="city" required
-                        class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
+                        <textarea name="address" required
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"></textarea>
                     </div>
                     </div>
 
                     <div>
                     <label class="block text-sm font-semibold mb-2">Short Description of Your Business
                         *</label>
-                    <textarea name="business_description" rows="3" required
+                    <textarea name="bio" rows="3" required
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"></textarea>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-6">
+                    {{-- <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Years in Business</label>
+                            <select name="years_in_business"
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
+                            <option value="">Select Range</option>
+                            <option value="0-1">0-1 years</option>
+                            <option value="2-5">2-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="10+">10+ years</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Preferred Meeting Location</label>
+                            <select name="preferred_location"
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
+                            <option value="">Select Location</option>
+                            <option value="bhilai">Bhilai</option>
+                            <option value="raipur">Raipur</option>
+                            <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div> --}}
+
+
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Years in Business</label>
-                        <select name="years_in_business"
-                        class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                        <option value="">Select Range</option>
-                        <option value="0-1">0-1 years</option>
-                        <option value="2-5">2-5 years</option>
-                        <option value="6-10">6-10 years</option>
-                        <option value="10+">10+ years</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Preferred Meeting Location</label>
-                        <select name="preferred_location"
-                        class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                        <option value="">Select Location</option>
-                        <option value="bhilai">Bhilai</option>
-                        <option value="raipur">Raipur</option>
-                        <option value="other">Other</option>
-                        </select>
-                    </div>
+                        <label for="payment_details" class="block text-sm font-semibold mb-2">Payment Details *</label>
+                        <textarea name="payment_details" id="payment_details" required
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">{{ old('payment_details') }}</textarea>
+                        <p class="text-sm text-white/70 mt-1">Include transaction ID, payment method, etc.</p>
+                        @error('payment_details')
+                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
+                    <div>
+                        <label for="payment_screenshot" class="block text-sm font-semibold mb-2">Payment Screenshot *</label>
+                        <input type="file" name="payment_screenshot" id="payment_screenshot" accept="image/*" required
+                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
+                        <p class="text-sm text-white/70 mt-1">Upload an image of your payment receipt/screenshot (JPG, PNG, JPEG). Max size: 5MB</p>
+                        @error('payment_screenshot')
+                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <div>
                     <label class="block text-sm font-semibold mb-2">Why do you want to join CBN?</label>
-                    <textarea name="join_reason" rows="3"
+                    <textarea name="other_details" rows="3"
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"></textarea>
                     </div>
 
-                    <div>
+                    {{-- <div>
                     <label class="block text-sm font-semibold mb-2">Referral Code (if invited by a
                         member)</label>
                     <input type="text" name="referral_code"
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                    </div>
+                    </div> --}}
 
                     <div class="flex items-start space-x-3">
                     <input type="checkbox" name="agree_terms" required

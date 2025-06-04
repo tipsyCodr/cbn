@@ -1,17 +1,14 @@
-<footer class="bg-[#013f3a] text-white py-12 mt-12">
+<footer class="bg-[#013f3a] text-white py-12 mt-12" style="background-color: rgb(4, 28, 27);">
     <div class="container mx-auto px-4">
         <div class="grid max-w-7xl mx-auto justify-center md:grid-cols-3 gap-8">
             <div class="space-y-4">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-[#013f3a] text-white p-3 rounded-lg">
-                        {{-- <i class="fas fa-network-wired text-2xl"></i> --}}
+                <div class="flex flex-col items-start space-x-3">
                     <img src="{{ asset('img/logo.png') }}" alt="logo" class="w-20 ">
-
-                    </div>
+                    
                     <div>
-                        <h3 class="text-2xl font-bold">{{ config('app.name', 'CBN') }}</h3>
-                        <p class="text-gray-400 text-sm">Chhattisgarh Business Network</p>
-                    </div>
+                        <h3 class="text-2xl font-bold">Chhattisgarh Business Network</h3>
+                        {{-- <p class="text-gray-400 text-sm">{{ config('app.name', 'CBN') }}Chhattisgarh Business Network</p> --}}
+                    </div>  
                 </div>
                 <p class="text-gray-400">
                     Connect, grow, and share success with our business networking community.<br>

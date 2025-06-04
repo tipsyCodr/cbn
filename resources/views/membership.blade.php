@@ -32,7 +32,7 @@
                     <h1 class="text-2xl font-bold mb-4">Membership Form</h1>
                     
                     <div class="mb-4">
-                        <label for="name" class="block text-gray-700 font-bold mb-2">Name: <span class="text-red-500">*</span></label>
+                        <label for="name" class="block text-gray-700 font-bold mb-2">Full Name: <span class="text-red-500">*</span></label>
                         <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full px-3 py-2 border @error('name') border-red-500 @else border-gray-300 @enderror rounded-md" required>
                         @error('name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="company" class="block text-gray-700 font-bold mb-2">Company:</label>
+                        <label for="company" class="block text-gray-700 font-bold mb-2">Business Name:</label>
                         <input type="text" name="company" id="company" value="{{ old('company') }}" class="w-full px-3 py-2 border @error('company') border-red-500 @else border-gray-300 @enderror rounded-md">
                         @error('company')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="category" class="block text-gray-700 font-bold mb-2">Category: <span class="text-red-500">*</span></label>
+                        <label for="category" class="block text-gray-700 font-bold mb-2">Business Category: <span class="text-red-500">*</span></label>
                         <input type="text" name="category" id="category" value="{{ old('category') }}" class="w-full px-3 py-2 border @error('category') border-red-500 @else border-gray-300 @enderror rounded-md" required>
                         @error('category')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="mobile" class="block text-gray-700 font-bold mb-2">Mobile: <span class="text-red-500">*</span></label>
+                        <label for="mobile" class="block text-gray-700 font-bold mb-2">Phone No.: <span class="text-red-500">*</span></label>
                         <input type="text" name="mobile" id="mobile" value="{{ old('mobile') }}" class="w-full px-3 py-2 border @error('mobile') border-red-500 @else border-gray-300 @enderror rounded-md" required>
                         @error('mobile')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="bio" class="block text-gray-700 font-bold mb-2">Bio:</label>
+                        <label for="bio" class="block text-gray-700 font-bold mb-2">Short Description of Your Business *</label>
                         <textarea name="bio" id="bio" class="w-full px-3 py-2 border @error('bio') border-red-500 @else border-gray-300 @enderror rounded-md">{{ old('bio') }}</textarea>
                         @error('bio')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -78,7 +78,13 @@
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-
+                    <div class="mb-4">
+                        <label for="address" class="block text-gray-700 font-bold mb-2">City / Location: <span class="text-red-500">*</span></label>
+                        <textarea name="address" id="address" class="w-full px-3 py-2 border @error('address') border-red-500 @else border-gray-300 @enderror rounded-md" required>{{ old('address') }}</textarea>
+                        @error('address')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <div class="mb-4">
                         <label for="payment_details" class="block text-gray-700 font-bold mb-2">Payment Details: <span class="text-red-500">*</span></label>
                         <textarea name="payment_details" id="payment_details" class="w-full px-3 py-2 border @error('payment_details') border-red-500 @else border-gray-300 @enderror rounded-md" required>{{ old('payment_details') }}</textarea>
@@ -99,7 +105,7 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label for="other_details" class="block text-gray-700 font-bold mb-2">Other Details:</label>
+                        <label for="other_details" class="block text-gray-700 font-bold mb-2">Why do you want to join CBN?</label>
                         <textarea name="other_details" id="other_details" class="w-full px-3 py-2 border @error('other_details') border-red-500 @else border-gray-300 @enderror rounded-md">{{ old('other_details') }}</textarea>
                         @error('other_details')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

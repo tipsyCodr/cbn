@@ -33,8 +33,9 @@ class UserController extends Controller
             'company' => 'sometimes|nullable|string|max:255',
             'category' => 'sometimes|nullable|string|max:255',
             'bio' => 'sometimes|nullable|string|max:500',
-            'payment_details' => 'required|string|max:500',
-            'payment_screenshot' => 'required|file|image|max:5120', // 5MB max, image file required
+            'address' => 'sometimes|nullable|string|max:500',
+            'payment_details' => 'nullable|string|max:500',
+            'payment_screenshot' => 'nullable|file|image|max:5120', // 5MB max, image file required
             'other_details' => 'nullable|string|max:500',
             'mobile' => 'required|string|max:15',
         ]);
@@ -60,6 +61,7 @@ class UserController extends Controller
                 'company' => $validate['company'] ?? null,
                 'category' => $validate['category'] ?? null,
                 'bio' => $validate['bio'] ?? null,
+                'address' => $validate['address'] ?? null,
                 'mobile' => $validate['mobile'],
                 'password' => Hash::make($un_en_password),
             ]);
