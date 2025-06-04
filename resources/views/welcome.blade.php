@@ -40,10 +40,10 @@
                         </p>
                     </div>
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="#join"
+                        {{-- <a href="#join"
                             class="bg-[#ff8001] text-[#013f3a] px-8 py-4 rounded-lg font-bold hover:bg-orange-400 transition duration-300 text-center">
                             <i class="fas fa-user-plus mr-2"></i>Join Now
-                        </a>
+                        </a> --}}
                         <a href="#events"
                             class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-[#013f3a] transition duration-300 text-center">
                             <i class="fas fa-calendar mr-2"></i>Attend a Meeting
@@ -446,7 +446,7 @@
         </section>
 
         <!-- Join CBN Section -->
-        <section id="join" class="py-16 bg-gradient-to-br from-[#013f3a] via-[#013f3a] to-[#ff8001] text-white">
+        {{-- <section id="join" class="py-16 bg-gradient-to-br from-[#013f3a] via-[#013f3a] to-[#ff8001] text-white">
             <div class="container mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-bold mb-4">Join the CBN Network – Let's Grow Together!</h2>
@@ -535,29 +535,7 @@
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"></textarea>
                     </div>
 
-                    {{-- <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Years in Business</label>
-                            <select name="years_in_business"
-                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                            <option value="">Select Range</option>
-                            <option value="0-1">0-1 years</option>
-                            <option value="2-5">2-5 years</option>
-                            <option value="6-10">6-10 years</option>
-                            <option value="10+">10+ years</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Preferred Meeting Location</label>
-                            <select name="preferred_location"
-                            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                            <option value="">Select Location</option>
-                            <option value="bhilai">Bhilai</option>
-                            <option value="raipur">Raipur</option>
-                            <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div> --}}
+                    
 
 
                     <div>
@@ -585,13 +563,7 @@
                         class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]"></textarea>
                     </div>
 
-                    {{-- <div>
-                    <label class="block text-sm font-semibold mb-2">Referral Code (if invited by a
-                        member)</label>
-                    <input type="text" name="referral_code"
-                        class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#ff8001]">
-                    </div> --}}
-
+                   
                     <div class="flex items-start space-x-3">
                     <input type="checkbox" name="agree_terms" required
                         class="mt-1 w-5 h-5 text-[#ff8001] rounded border-white/30 focus:ring-[#ff8001]">
@@ -606,7 +578,7 @@
                 </div>
             </div>
             </div>
-        </section>
+        </section> --}}
 
         <!-- Contact Section -->
         <section id="contact" class="py-16 bg-gray-50">

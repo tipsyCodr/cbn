@@ -8,9 +8,9 @@
                     <img src="{{ asset('img/logo.png') }}" alt="logo" class="w-20 ">
                         {{-- <i class="fas fa-network-wired text-2xl"></i> --}}
                     </div>
-                    <div>
+                    <div class="hidden md:block">
                         <h1 class="text-2xl font-bold text-gray-800">Chhattisgarh</h1>
-                        <p class="text-lg text-gray-600"> Business Network</p>
+                        <p class="text-[1rem] text-gray-600"> Business Network</p>
                     </div>
                 </div>
                 
@@ -21,11 +21,14 @@
                     <a href="{{ url('/') }}#events" class="text-gray-700 hover:text-blue-600 transition duration-300">Events</a>
                     <a href="{{ url('/') }}#testimonials" class="text-gray-700 hover:text-blue-600 transition duration-300">Testimonials</a>
                     <a href="{{ url('/') }}#contact" class="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>
-                    <a href="{{ route('membership') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('membership') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
+                    {{-- <a href="{{ route('membership') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('membership') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Membership
-                    </a>
+                    </a> --}}
                     <a href="{{ route('visitor') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('visitor') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
                         Visitor
+                    </a>
+                    <a href="{{ route('expression-of-interest') }}" class="inline-flex pb-2 items-center px-1 pt-1 border-b-2 {{ request()->routeIs('expression-of-interest') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} text-sm font-medium">
+                        Expression of Interest
                     </a>
                 </div>
 
@@ -55,6 +58,8 @@
                     <a href="#events" class="block text-gray-700 hover:text-blue-600">Events</a>
                     <a href="#testimonials" class="block text-gray-700 hover:text-blue-600">Testimonials</a>
                     <a href="#contact" class="block text-gray-700 hover:text-blue-600">Contact</a>
+                    <a href="{{ route('visitor') }}" class="block text-gray-700 hover:text-blue-600">Visitor</a>
+                    <a href="{{ route('expression-of-interest') }}" class="block text-gray-700 hover:text-blue-600">Expression of Interest</a>
                 </div>
             </div>
         </div>
