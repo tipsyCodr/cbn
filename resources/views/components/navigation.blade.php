@@ -10,7 +10,7 @@
                     </div>
                     <div class="hidden md:block">
                         <h1 class="text-2xl font-bold text-gray-800">Chhattisgarh</h1>
-                        <p class="text-[1rem] text-gray-600"> Business Network</p>
+                        <p class="text-[1.16rem] text-gray-600"> Business Network</p>
                     </div>
                 </div>
                 
