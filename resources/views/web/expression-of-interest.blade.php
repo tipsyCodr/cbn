@@ -1,4 +1,5 @@
 <x-app>
+        <div class='h-24'>s</div>
 
     <div class="pt-6 max-w-6xl mx-auto px-4" x-data="{ choice: 'expression_of_interest' }">
         <h1 class="text-2xl font-bold mb-4">Are you interested in becoming a member of CBN?</h1>
