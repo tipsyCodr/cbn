@@ -3,10 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExpressionOfInterest;
+use App\Models\Feedback;
+use ErrorException;
 use Illuminate\Http\Request;
 
 class WebController extends Controller
 {
+    public function home(){
+        return view('welcome');
+    }
+    public function feedbackStore(Request $request){
+        try{
+            $validated = $request->validate([
+                'name'=>'required',
+                'mobile'=>'required',
+                'email'=>'nullable',
+                'message'=>'required',
+            ]);
+            $feedback = Feedback::create($validated);
+            
+            return redirect()->back()->with('success','Your Feedback is successfully submitted. We will respond you soon.');
+        }
+        catch(ErrorException $e){
+            return redirect()->back()->with('error','Failed to submit message:'.$e->getMessage());
+        }
+    }
+
     public function expressionOfInterest()
     {
         return view('web.expression-of-interest');

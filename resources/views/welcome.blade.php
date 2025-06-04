@@ -642,23 +642,23 @@
                 </div>
 
                 <div class="bg-white p-8 rounded-xl shadow-lg">
-                <form action="#" method="POST" class="space-y-6">
+                <form action="{{ route('store.feedback') }}" method="POST" class="space-y-6">
                     @csrf
                     <div>
                     <label class="block text-sm font-semibold text-[#013f3a] mb-2">Full Name *</label>
-                    <input type="text" name="contact_name" required
+                    <input type="text" name="name" required
                         class="w-full px-4 py-3 rounded-lg border border-[#013f3a]/30 focus:outline-none focus:ring-2 focus:ring-[#ff8001] focus:border-transparent">
                     </div>
 
                     <div>
                     <label class="block text-sm font-semibold text-[#013f3a] mb-2">Phone Number *</label>
-                    <input type="tel" name="contact_phone" required
+                    <input type="tel" name="mobile" required
                         class="w-full px-4 py-3 rounded-lg border border-[#013f3a]/30 focus:outline-none focus:ring-2 focus:ring-[#ff8001] focus:border-transparent">
                     </div>
 
                     <div>
                     <label class="block text-sm font-semibold text-[#013f3a] mb-2">Email Address *</label>
-                    <input type="email" name="contact_email" required
+                    <input type="email" name="email" required
                         class="w-full px-4 py-3 rounded-lg border border-[#013f3a]/30 focus:outline-none focus:ring-2 focus:ring-[#ff8001] focus:border-transparent">
                     </div>
 

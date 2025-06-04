@@ -8,9 +8,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [WebController::class, 'home'])->name('home');
+Route::post('/feedback-coming', [WebController::class, 'feedbackStore'])->name('store.feedback');
 Route::get('membership',[UserController::class,'form'])->name('membership');
 Route::post('membership/register',[UserController::class, 'store'])->name('membership.register');
 

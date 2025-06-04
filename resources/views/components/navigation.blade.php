@@ -58,5 +58,34 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+
+        
+    @if (session('success') || session('error'))
+        <div 
+            x-data="{ show: true }" 
+            x-init="setTimeout(() => show = false, 3000)" 
+            x-show="show"
+            class="fixed top-20 right-5 z-50"
+        >
+            @if (session('success'))
+                <div class="bg-green-500 text-white px-6 py-3 rounded shadow-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="bg-red-500 text-white px-6 py-3 rounded shadow-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+        </div>
+    @endif
+
+
 
