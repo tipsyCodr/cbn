@@ -25,12 +25,14 @@ class MeetingsResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required(),
-                Forms\Components\DatePicker::make('date')
+                    Forms\Components\DatePicker::make('date')
                     ->required(),
-                Forms\Components\TimePicker::make('start_time')
+                    Forms\Components\TimePicker::make('start_time')
                     ->nullable(),
-                Forms\Components\TimePicker::make('end_time')
+                    Forms\Components\TimePicker::make('end_time')
                     ->nullable(),
+                    Forms\Components\TextInput::make('location')
+                    ->required(),
                 Forms\Components\TextInput::make('tyfcb')
                     ->type('number')
                     ->nullable(),

@@ -271,7 +271,7 @@
             </div>
             </div>
         </section>
-
+        
         <!-- Events Section -->
         <section id="events" class="py-16 max-w-7xl mx-auto bg-gray-50">
             <div class="container mx-auto px-4">
@@ -286,18 +286,23 @@
                     <h3 class="text-2xl font-bold text-[#013f3a] mb-4">
                     <i class="fas fa-calendar-alt text-[#013f3a] mr-3"></i>Upcoming Meeting
                     </h3>
+                    <p class="font-bold">{{$meeting->name}}</p> <br/>
                     <div class="space-y-3">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-calendar text-[#013f3a]"></i>
-                        <span class="font-semibold">Saturday, 7 June 2025</span>
+                        <span class="font-semibold">
+                            {{ \Carbon\Carbon::parse($meeting->date)->format('l, j F Y') }}
+                        </span>
                     </div>
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-clock text-[#013f3a]"></i>
-                        <span>7:30 AM to 10:00 AM</span>
+                        <span>
+                            {{ \Carbon\Carbon::parse($meeting->start_time)->format('g:i A') }} to {{ \Carbon\Carbon::parse($meeting->end_time)->format('g:i A') }}
+                        </span>
                     </div>
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-map-marker-alt text-[#013f3a]"></i>
-                        <span>Hotel Central Park, Bhilai</span>
+                        <span>{{$meeting->location}}</span>
                     </div>
                     </div>
                 </div>

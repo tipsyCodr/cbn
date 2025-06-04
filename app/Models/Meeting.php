@@ -16,6 +16,7 @@ class Meeting extends Model
         'date',
         'start_time',
         'end_time',
+        'location',
         'tyfcb',
         'visitors',
         'speakers'

@@ -4,13 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\ExpressionOfInterest;
 use App\Models\Feedback;
+use App\Models\Media;
+use App\Models\Meeting;
 use ErrorException;
 use Illuminate\Http\Request;
+use App\Models\Settings;
 
 class WebController extends Controller
 {
     public function home(){
-        return view('welcome');
+        $meeting = Meeting::getNextMeeting();
+        $settingsModel = new \App\Models\Settings();
+        $settings = [
+            'mobile' => Settings::getSetting('mobile'),
+            'email' => Settings::getSetting('email'),
+            'location' => Settings::getSetting('location'),
+        ];
+        return view('welcome', compact('meeting', 'settings'));
+    }
+    public function gallery(){
+        $gallery = Media::all();
+        return view('gallery',compact('gallery'));
     }
     public function feedbackStore(Request $request){
         try{
