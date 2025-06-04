@@ -14,7 +14,16 @@
         <!-- Main Content -->
         <div class="relative z-10 container mx-auto px-4 max-w-8xl">
             <div class="grid md:grid-cols-2 gap-12 items-center">
+                
                 <div class="space-y-6">
+                    <button @click="paused = !paused"
+                    class="text-sm mt-6 px-4 py-2 bg-white/10 border border-white/20 rounded hover:bg-white/20 transition flex items-center space-x-2">
+                    <span>
+                        <i class="fas fa-play" x-show="paused"></i>
+                        <i class="fas fa-pause" x-show="!paused"></i>
+                    </span>
+                    {{-- <span x-text="paused ? 'Resume Background' : 'Pause Background'"></span> --}}
+                </button>
                     <h1 class="text-4xl md:text-6xl font-bold leading-tight">
                         Welcome to <span class="text-[#ff8001]">CBN</span>
                     </h1>
@@ -41,13 +50,9 @@
                         </a>
                     </div>
 
-                <button @click="paused = !paused"
-                    class="text-sm mt-6 px-4 py-2 bg-white/10 border border-white/20 rounded hover:bg-white/20 transition flex items-center space-x-2">
-                    <span x-html="paused ? '<i class=`fas fa-play`></i>' : '<i class=`fas fa-pause`></i>'"></span>
-                    <span x-text="paused ? 'Resume Background' : 'Pause Background'"></span>
-                </button>
-
+                    
                 </div>
+                
             </div>
         </div>
     </section>
