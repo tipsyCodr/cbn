@@ -17,7 +17,7 @@ class ExpressionOfInterestResource extends Resource
 {
     protected static ?string $model = ExpressionOfInterest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
 
     public static function form(Form $form): Form
     {
