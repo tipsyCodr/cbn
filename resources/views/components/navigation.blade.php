@@ -9,8 +9,8 @@
                         {{-- <i class="fas fa-network-wired text-2xl"></i> --}}
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">CBN</h1>
-                        <p class="text-sm text-gray-600">Chhattisgarh Business Network</p>
+                        <h1 class="text-2xl font-bold text-gray-800">Chhattisgarh</h1>
+                        <p class="text-lg text-gray-600"> Business Network</p>
                     </div>
                 </div>
                 

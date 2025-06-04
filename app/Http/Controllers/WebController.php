@@ -15,12 +15,13 @@ class WebController extends Controller
     public function home(){
         $meeting = Meeting::getNextMeeting();
         $settingsModel = new \App\Models\Settings();
+        $gallery = Media::orderBy('created_at', 'desc')->take(4)->get();
         $settings = [
             'mobile' => Settings::getSetting('mobile'),
             'email' => Settings::getSetting('email'),
             'location' => Settings::getSetting('location'),
         ];
-        return view('welcome', compact('meeting', 'settings'));
+        return view('welcome', compact('meeting', 'settings','gallery'));
     }
     public function gallery(){
         $gallery = Media::all();
