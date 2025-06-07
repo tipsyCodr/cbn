@@ -39,12 +39,12 @@ class ExpressionOfInterestResource extends Resource
                     ->tel()
                     ->required(),
                 Forms\Components\TextInput::make('professional_classification')
-                   ->required(),
+                    ->required(),
                 Forms\Components\DatePicker::make('visit_date')
                     ->required(),
                 Forms\Components\Textarea::make('product_service_feedback')
                     ->required(), // Added required validation
-                
+
                 Forms\Components\TextInput::make('chapter_name') // Added chapter_name field
                     ->required(),
                 Forms\Components\TextInput::make('region') // Added region field
@@ -89,10 +89,29 @@ class ExpressionOfInterestResource extends Resource
                 Tables\Columns\TextColumn::make('mobile'),
                 Tables\Columns\TextColumn::make('professional_classification'),
                 Tables\Columns\TextColumn::make('visit_date'),
+                Tables\Columns\TextColumn::make('form_type')
+                    ->badge()
+                    ->sortable()
+                    ->colors([
+                        'success' => 'expression_of_interest',
+                        'warning' => 'request_for_information',
+                        'danger' => 'feedback_form',
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'expression_of_interest' => 'Yes',
+                        'request_for_information' => 'Maybe',
+                        'feedback_form' => 'No',
+                        default => ucfirst(str_replace('_', ' ', $state)),
+                    }),
             ])
             ->filters([
-                //
-            ])  
+                Tables\Filters\SelectFilter::make('form_type')
+                    ->options([
+                        'expression_of_interest' => "Yes, I'm ready to get started",
+                        'request_for_information' => "Maybe, I would like more information",
+                        'feedback_form' => "No, not as of now",
+                    ]),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
