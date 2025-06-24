@@ -37,7 +37,7 @@ class UserController extends Controller
             'payment_details' => 'nullable|string|max:500',
             'payment_screenshot' => 'nullable|file|image|max:5120', // 5MB max, image file required
             'other_details' => 'nullable|string|max:500',
-            'mobile' => 'required|string|max:15',
+            'mobile' => 'required|string|max:15|unique:users',
         ]);
 
         $firstName = explode(' ', $validate['name'])[0];
