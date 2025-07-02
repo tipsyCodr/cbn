@@ -13,11 +13,12 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class ChapterWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
     protected function getTableHeading(): string
@@ -28,21 +29,17 @@ class ChapterWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(Chapter::query())
+            ->query(function (): Builder {
+                return Chapter::query();
+            })
             ->filters([
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('from')
-                            ->label('From')
-                            ->placeholder('Select start date'),
-                        DatePicker::make('until')
-                            ->label('Until')
-                            ->placeholder('Select end date'),
+                        DatePicker::make('from')->label('From'),
+                        DatePicker::make('until')->label('Until'),
                     ])
                     ->query(function ($query, array $data) {
-                        return $query
-                            ->when($data['from'] ?? null, fn($query, $date) => $query->whereDate('created_at', '>=', Carbon::parse($date)->startOfDay()))
-                            ->when($data['until'] ?? null, fn($query, $date) => $query->whereDate('created_at', '<=', Carbon::parse($date)->endOfDay()));
+                        return $query; // no need to filter Chapter::query(), only used for displaying filter indicators
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
@@ -67,89 +64,69 @@ class ChapterWidget extends BaseWidget
                     ->sortable(),
 
                 TextColumn::make('total_amount')
-                    ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
-                        $filters = $livewire?->filters['created_at'] ?? [];
+                    ->label('Total Amount')
+                    ->getStateUsing(function (Chapter $record): string {
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
 
-                        $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
-                        $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
-
-                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
+                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
                         $query = ThankYou::whereIn('from', $userIds);
-                        
 
-                        if ($from)
-                            $query->where('created_at', '>=', $from);
-                        if ($until)
-                            $query->where('created_at', '<=', $until);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
 
                         return '₹ ' . number_format($query->sum('amount'), 2);
-                    })
-                    ->sortable(),
+                    }),
 
+                TextColumn::make('tyfcb')
+                    ->label('Total TYFCB')
+                    ->getStateUsing(function (Chapter $record): int {
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
 
-TextColumn::make('tyfcb')
-                    ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
-                        $filters = $livewire?->filters['created_at'] ?? [];
-
-                        $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
-                        $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
-
-                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
+                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
                         $query = ThankYou::whereIn('from', $userIds);
-                        if ($from)
-                            $query->where('created_at', '>=', $from);
-                        if ($until)
-                            $query->where('created_at', '<=', $until);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
 
                         return $query->count();
-                    })
-                    ->sortable(),
+                    }),
 
+                TextColumn::make('referrals')
+                    ->label('Total Referrals')
+                    ->getStateUsing(function (Chapter $record): int {
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
 
-TextColumn::make('referrals')
-                    ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
-                        $filters = $livewire?->filters['created_at'] ?? [];
-
-                        $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
-                        $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
-
-                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
+                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
                         $query = Referral::whereIn('from', $userIds);
-                        if ($from)
-                            $query->where('created_at', '>=', $from);
-                        if ($until)
-                            $query->where('created_at', '<=', $until);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
 
                         return $query->count();
-                    })
-                    ->sortable(),
+                    }),
 
+                TextColumn::make('oto_requests')
+                    ->label('Total One to One Req.')
+                    ->getStateUsing(function (Chapter $record): int {
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
 
-TextColumn::make('oto_requests')
-                    ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
-                        $filters = $livewire?->filters['created_at'] ?? [];
-
-                        $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
-                        $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
-
-                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
+                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
                         $query = OneToOne::whereIn('user_id', $userIds);
-                        if ($from)
-                            $query->where('created_at', '>=', $from);
-                        if ($until)
-                            $query->where('created_at', '<=', $until);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
 
                         return $query->count();
-                    })
-                    ->sortable(),
+                    }),
 
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ]);
