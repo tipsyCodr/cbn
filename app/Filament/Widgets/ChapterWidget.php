@@ -17,7 +17,7 @@ use Carbon\Carbon;
 
 class ChapterWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
     protected function getTableHeading(): string
@@ -41,8 +41,8 @@ class ChapterWidget extends BaseWidget
                     ])
                     ->query(function ($query, array $data) {
                         return $query
-                            ->when($data['from'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '>=', Carbon::parse($date)->startOfDay()))
-                            ->when($data['until'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '<=', Carbon::parse($date)->endOfDay()));
+                            ->when($data['from'] ?? null, fn($query, $date) => $query->whereDate('created_at', '>=', Carbon::parse($date)->startOfDay()))
+                            ->when($data['until'] ?? null, fn($query, $date) => $query->whereDate('created_at', '<=', Carbon::parse($date)->endOfDay()));
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
@@ -68,7 +68,8 @@ class ChapterWidget extends BaseWidget
 
                 TextColumn::make('total_amount')
                     ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $filters = $column->getTable()->getLivewire()->filters['created_at'] ?? [];
+                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
+                        $filters = $livewire?->filters['created_at'] ?? [];
 
                         $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
                         $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
@@ -76,18 +77,22 @@ class ChapterWidget extends BaseWidget
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
 
                         $query = ThankYou::whereIn('from', $userIds);
+                        
 
-                        if ($from) $query->where('created_at', '>=', $from);
-                        if ($until) $query->where('created_at', '<=', $until);
+                        if ($from)
+                            $query->where('created_at', '>=', $from);
+                        if ($until)
+                            $query->where('created_at', '<=', $until);
 
                         return '₹ ' . number_format($query->sum('amount'), 2);
                     })
                     ->sortable(),
 
-                TextColumn::make('tyfcb')
-                    ->label('Total TYFCB')
+
+TextColumn::make('tyfcb')
                     ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $filters = $column->getTable()->getLivewire()->filters['created_at'] ?? [];
+                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
+                        $filters = $livewire?->filters['created_at'] ?? [];
 
                         $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
                         $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
@@ -95,17 +100,20 @@ class ChapterWidget extends BaseWidget
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
 
                         $query = ThankYou::whereIn('from', $userIds);
-                        if ($from) $query->where('created_at', '>=', $from);
-                        if ($until) $query->where('created_at', '<=', $until);
+                        if ($from)
+                            $query->where('created_at', '>=', $from);
+                        if ($until)
+                            $query->where('created_at', '<=', $until);
 
                         return $query->count();
                     })
                     ->sortable(),
 
-                TextColumn::make('referrals')
-                    ->label('Total Referrals')
+
+TextColumn::make('referrals')
                     ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $filters = $column->getTable()->getLivewire()->filters['created_at'] ?? [];
+                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
+                        $filters = $livewire?->filters['created_at'] ?? [];
 
                         $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
                         $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
@@ -113,17 +121,20 @@ class ChapterWidget extends BaseWidget
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
 
                         $query = Referral::whereIn('from', $userIds);
-                        if ($from) $query->where('created_at', '>=', $from);
-                        if ($until) $query->where('created_at', '<=', $until);
+                        if ($from)
+                            $query->where('created_at', '>=', $from);
+                        if ($until)
+                            $query->where('created_at', '<=', $until);
 
                         return $query->count();
                     })
                     ->sortable(),
 
-                TextColumn::make('oto_requests')
-                    ->label('Total One to One Req.')
+
+TextColumn::make('oto_requests')
                     ->getStateUsing(function (Chapter $record, $state, $column) {
-                        $filters = $column->getTable()->getLivewire()->filters['created_at'] ?? [];
+                        $livewire = method_exists($column->getTable(), 'getLivewire') ? $column->getTable()->getLivewire() : null;
+                        $filters = $livewire?->filters['created_at'] ?? [];
 
                         $from = !empty($filters['from']) ? Carbon::parse($filters['from'])->startOfDay() : null;
                         $until = !empty($filters['until']) ? Carbon::parse($filters['until'])->endOfDay() : null;
@@ -131,8 +142,10 @@ class ChapterWidget extends BaseWidget
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id')->toArray();
 
                         $query = OneToOne::whereIn('user_id', $userIds);
-                        if ($from) $query->where('created_at', '>=', $from);
-                        if ($until) $query->where('created_at', '<=', $until);
+                        if ($from)
+                            $query->where('created_at', '>=', $from);
+                        if ($until)
+                            $query->where('created_at', '<=', $until);
 
                         return $query->count();
                     })
