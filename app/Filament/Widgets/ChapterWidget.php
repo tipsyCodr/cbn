@@ -7,6 +7,7 @@ use App\Models\OneToOne;
 use App\Models\Referral;
 use App\Models\ThankYou;
 use App\Models\User;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -34,10 +35,10 @@ class ChapterWidget extends BaseWidget
             ->filters([
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('from')
+                        DateTimePicker::make('from')
                             ->label('From')
                             ->placeholder('Select start date'),
-                        DatePicker::make('until')
+                        DateTimePicker::make('until')
                             ->label('Until')
                             ->placeholder('Select end date'),
                     ])
