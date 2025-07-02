@@ -12,7 +12,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 class TopUsers extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
@@ -39,10 +40,22 @@ class TopUsers extends BaseWidget
                     )
                     ->orderByDesc('total_requests')
             )
+            ->filters([
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from')->label('From'),
+                        DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['until'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                    }),
+            ])
             ->defaultSort('total_requests', 'desc')
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('total_requests')->sortable(),
+                TextColumn::make('name')->label('Member')->searchable()->sortable(),
+                TextColumn::make('total_requests')->label('Total Requests')->sortable(),
                 TextColumn::make('total_tyfcb')->label('Total TYFCB')->sortable(),
                 TextColumn::make('total_referrals')->label('Total Referrals')->sortable(),
                 TextColumn::make('total_oto')->label('Total One To One')->sortable(),
