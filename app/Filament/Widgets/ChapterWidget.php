@@ -7,7 +7,6 @@ use App\Models\OneToOne;
 use App\Models\Referral;
 use App\Models\ThankYou;
 use App\Models\User;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -26,6 +25,9 @@ class ChapterWidget extends BaseWidget
         return 'Chapters ';
     }
 
+    // Store filter dates for use in column calculations
+    protected $filterDates = [];
+
     public function table(Table $table): Table
     {
         return $table
@@ -35,14 +37,17 @@ class ChapterWidget extends BaseWidget
             ->filters([
                 Filter::make('created_at')
                     ->form([
-                        DateTimePicker::make('from')
+                        DatePicker::make('from')
                             ->label('From')
                             ->placeholder('Select start date'),
-                        DateTimePicker::make('until')
+                        DatePicker::make('until')
                             ->label('Until')
                             ->placeholder('Select end date'),
                     ])
                     ->query(function ($query, array $data) {
+                        // Store filter dates for column calculations
+                        $this->filterDates = $data;
+                        
                         return $query
                             ->when(
                                 !empty($data['from']), 
@@ -80,8 +85,18 @@ class ChapterWidget extends BaseWidget
                         if (empty($userIds)) {
                             return '₹ 0';
                         }
+                        
+                        $query = ThankYou::whereIn('from', $userIds);
+                        
+                        // Apply date filters if they exist
+                        if (!empty($this->filterDates['from'])) {
+                            $query->where('created_at', '>=', \Carbon\Carbon::parse($this->filterDates['from'])->startOfDay());
+                        }
+                        if (!empty($this->filterDates['until'])) {
+                            $query->where('created_at', '<=', \Carbon\Carbon::parse($this->filterDates['until'])->endOfDay());
+                        }
                        
-                        $amount = '₹ ' . number_format(ThankYou::whereIn('from', $userIds)->sum('amount'), 2);
+                        $amount = '₹ ' . number_format($query->sum('amount'), 2);
                         return $amount;
                     })
                     ->sortable(),
@@ -96,7 +111,17 @@ class ChapterWidget extends BaseWidget
                             return 0;
                         }
                         
-                        return ThankYou::whereIn('from', $userIds)->count();
+                        $query = ThankYou::whereIn('from', $userIds);
+                        
+                        // Apply date filters if they exist
+                        if (!empty($this->filterDates['from'])) {
+                            $query->where('created_at', '>=', \Carbon\Carbon::parse($this->filterDates['from'])->startOfDay());
+                        }
+                        if (!empty($this->filterDates['until'])) {
+                            $query->where('created_at', '<=', \Carbon\Carbon::parse($this->filterDates['until'])->endOfDay());
+                        }
+                        
+                        return $query->count();
                     })
                     ->sortable(),
                 TextColumn::make('referrals')->label('Total Referrals')
@@ -110,7 +135,17 @@ class ChapterWidget extends BaseWidget
                             return 0;
                         }
                         
-                        return Referral::whereIn('from', $userIds)->count();
+                        $query = Referral::whereIn('from', $userIds);
+                        
+                        // Apply date filters if they exist
+                        if (!empty($this->filterDates['from'])) {
+                            $query->where('created_at', '>=', \Carbon\Carbon::parse($this->filterDates['from'])->startOfDay());
+                        }
+                        if (!empty($this->filterDates['until'])) {
+                            $query->where('created_at', '<=', \Carbon\Carbon::parse($this->filterDates['until'])->endOfDay());
+                        }
+                        
+                        return $query->count();
                     })
                     ->sortable(),
                 TextColumn::make('oto_requests')->label('Total One to One Req.')
@@ -124,7 +159,17 @@ class ChapterWidget extends BaseWidget
                             return 0;
                         }
                         
-                        return OneToOne::whereIn('user_id', $userIds)->count();
+                        $query = OneToOne::whereIn('user_id', $userIds);
+                        
+                        // Apply date filters if they exist
+                        if (!empty($this->filterDates['from'])) {
+                            $query->where('created_at', '>=', \Carbon\Carbon::parse($this->filterDates['from'])->startOfDay());
+                        }
+                        if (!empty($this->filterDates['until'])) {
+                            $query->where('created_at', '<=', \Carbon\Carbon::parse($this->filterDates['until'])->endOfDay());
+                        }
+                        
+                        return $query->count();
                     })
                     ->sortable(),
                 TextColumn::make('created_at')
