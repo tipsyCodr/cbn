@@ -20,7 +20,6 @@ class ChapterWidget extends BaseWidget
     protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
-
     protected function getTableHeading(): string
     {
         return 'Chapters ';
@@ -35,33 +34,56 @@ class ChapterWidget extends BaseWidget
             ->filters([
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('from')->label('From'),
-                        DatePicker::make('until')->label('Until'),
+                        DatePicker::make('from')
+                            ->label('From')
+                            ->placeholder('Select start date'),
+                        DatePicker::make('until')
+                            ->label('Until')
+                            ->placeholder('Select end date'),
                     ])
                     ->query(function ($query, array $data) {
                         return $query
-                            ->when($data['from'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
-                            ->when($data['until'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                            ->when(
+                                !empty($data['from']), 
+                                fn ($query) => $query->whereDate('created_at', '>=', $data['from'])
+                            )
+                            ->when(
+                                !empty($data['until']), 
+                                fn ($query) => $query->whereDate('created_at', '<=', $data['until'])
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        
+                        if (!empty($data['from'])) {
+                            $indicators[] = 'From: ' . \Carbon\Carbon::parse($data['from'])->format('M d, Y');
+                        }
+                        
+                        if (!empty($data['until'])) {
+                            $indicators[] = 'Until: ' . \Carbon\Carbon::parse($data['until'])->format('M d, Y');
+                        }
+                        
+                        return $indicators;
                     }),
             ])
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('title')->label('Chapters')->searchable()->sortable(),
                 TextColumn::make('total_amount')
-                ->getStateUsing(function (Chapter $record): string {
-                    $userIds = User::where('chapter_id', $record->id)
-                        ->where('active', 1)
-                        ->pluck('id')
-                        ->toArray();
-                        
-                    if (empty($userIds)) {
-                        return 0;
-                    }
-                   
-                    $amount = '₹ ' . ThankYou::whereIn('from', $userIds)->sum('amount');
-                    return $amount;
-                })
-                ->sortable(),
+                    ->getStateUsing(function (Chapter $record): string {
+                        $userIds = User::where('chapter_id', $record->id)
+                            ->where('active', 1)
+                            ->pluck('id')
+                            ->toArray();
+                            
+                        if (empty($userIds)) {
+                            return '₹ 0';
+                        }
+                       
+                        $amount = '₹ ' . number_format(ThankYou::whereIn('from', $userIds)->sum('amount'), 2);
+                        return $amount;
+                    })
+                    ->sortable(),
                 TextColumn::make('tyfcb')->label('Total TYFCB')
                     ->getStateUsing(function (Chapter $record): int {
                         $userIds = User::where('chapter_id', $record->id)
@@ -104,7 +126,9 @@ class ChapterWidget extends BaseWidget
                         return OneToOne::whereIn('user_id', $userIds)->count();
                     })
                     ->sortable(),
-                // TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
                 // TextColumn::make('updated_at')->dateTime(),
             ]);
     }
