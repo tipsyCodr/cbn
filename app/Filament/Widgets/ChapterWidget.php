@@ -45,11 +45,11 @@ class ChapterWidget extends BaseWidget
                         return $query
                             ->when(
                                 !empty($data['from']), 
-                                fn ($query) => $query->whereDate('created_at', '>=', $data['from'])
+                                fn ($query) => $query->where('created_at', '>=', \Carbon\Carbon::parse($data['from'])->startOfDay())
                             )
                             ->when(
                                 !empty($data['until']), 
-                                fn ($query) => $query->whereDate('created_at', '<=', $data['until'])
+                                fn ($query) => $query->where('created_at', '<=', \Carbon\Carbon::parse($data['until'])->endOfDay())
                             );
                     })
                     ->indicateUsing(function (array $data): array {
