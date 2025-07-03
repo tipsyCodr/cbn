@@ -18,72 +18,117 @@ use Illuminate\Support\Carbon;
 
 class ChapterWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
     protected function getTableHeading(): string
     {
-        return 'Chapters';
+        return 'Total Requests Till Now';
     }
 
     public function table(Table $table): Table
     {
-        return $table->query(function (): Builder {
-            return Chapter::query();
-        })
+        return $table
+            ->query(function (): Builder {
+                return Chapter::query();
+            })
+            ->filters([
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from')->label('From'),
+                        DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query; // no need to filter Chapter::query(), only used for displaying filter indicators
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if (!empty($data['from'])) {
+                            $indicators[] = 'From: ' . Carbon::parse($data['from'])->format('M d, Y');
+                        }
+
+                        if (!empty($data['until'])) {
+                            $indicators[] = 'Until: ' . Carbon::parse($data['until'])->format('M d, Y');
+                        }
+
+                        return $indicators;
+                    }),
+            ])
             ->columns([
-                TextColumn::make('title')->label('Title'),
-                TextColumn::make('users')
-                    ->label('Last 15 Days Total')
-                    ->getStateUsing(function (Chapter $record) {
-                        $userIds = User::where('chapter_id', $record->id)->pluck('id');
-                        
-                        // Get total for last 15 days
-                        $fifteenDaysAgo = Carbon::now()->subDays(15)->startOfDay();
-                        
-                        $total = ThankYou::whereIn('from', $userIds)
-                            ->where('created_at', '>=', $fifteenDaysAgo)
-                            ->sum('amount');
-                        
-                        return 'Total (' . $total . ')';
+                TextColumn::make('id')->sortable(),
+
+                TextColumn::make('title')
+                    ->label('Chapters')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('total_amount')
+                    ->label('Total Amount')
+                    ->getStateUsing(function (Chapter $record): string {
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
+
+                        $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
+
+                        $query = ThankYou::whereIn('from', $userIds);
+
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
+
+                        return '₹ ' . number_format($query->sum('amount'), 2);
                     }),
 
                 TextColumn::make('tyfcb')
-                    ->label('Total TYFCB (Last 15 Days)')
+                    ->label('Total TYFCB')
                     ->getStateUsing(function (Chapter $record): int {
-                        $fifteenDaysAgo = Carbon::now()->subDays(15)->startOfDay();
-                        
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
+
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
-                        return ThankYou::whereIn('from', $userIds)
-                            ->where('created_at', '>=', $fifteenDaysAgo)
-                            ->count();
+                        $query = ThankYou::whereIn('from', $userIds);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
+
+                        return $query->count();
                     }),
 
                 TextColumn::make('referrals')
-                    ->label('Total Referrals (Last 15 Days)')
+                    ->label('Total Referrals')
                     ->getStateUsing(function (Chapter $record): int {
-                        $fifteenDaysAgo = Carbon::now()->subDays(15)->startOfDay();
-                        
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
+
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
-                        return Referral::whereIn('from', $userIds)
-                            ->where('created_at', '>=', $fifteenDaysAgo)
-                            ->count();
+                        $query = Referral::whereIn('from', $userIds);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
+
+                        return $query->count();
                     }),
 
                 TextColumn::make('oto_requests')
-                    ->label('Total One to One Req. (Last 15 Days)')
+                    ->label('Total One to One Req.')
                     ->getStateUsing(function (Chapter $record): int {
-                        $fifteenDaysAgo = Carbon::now()->subDays(15)->startOfDay();
-                        
+                        $filters = request()->input('tableFilters') ?? [];
+                        $from = !empty($filters['created_at']['from']) ? Carbon::parse($filters['created_at']['from'])->startOfDay() : null;
+                        $until = !empty($filters['created_at']['until']) ? Carbon::parse($filters['created_at']['until'])->endOfDay() : null;
+
                         $userIds = User::where('chapter_id', $record->id)->where('active', 1)->pluck('id');
 
-                        return OneToOne::whereIn('user_id', $userIds)
-                            ->where('created_at', '>=', $fifteenDaysAgo)
-                            ->count();
+                        $query = OneToOne::whereIn('user_id', $userIds);
+                        if ($from) $query->where('created_at', '>=', $from);
+                        if ($until) $query->where('created_at', '<=', $until);
+
+                        return $query->count();
                     }),
-            ])
-        ;
+
+                TextColumn::make('created_at')->dateTime()->sortable(),
+            ]);
     }
 }
