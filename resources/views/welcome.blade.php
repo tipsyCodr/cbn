@@ -309,7 +309,6 @@
                     @else
                     <div class="p-4 rounded bg-[#013f3a]/10">
                         <p class="text-gray-600 text-center"> No Upcoming Meeting </p>
-
                     </div>
                     @endif
                 </div>
