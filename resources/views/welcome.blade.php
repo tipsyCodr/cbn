@@ -285,13 +285,14 @@
                 <div class="bg-[#013f3a]/10 p-4 rounded-lg mb-6">
                     <h3 class="text-2xl font-bold text-[#013f3a] mb-4">
                     <i class="fas fa-calendar-alt text-[#013f3a] mr-3"></i>Upcoming Meeting
-                    </h3>
-                    <p class="font-bold">{{$meeting->name}}</p> <br/>
+                </h3>
+                @if($meeting)
+                    <p class="font-bold">{{$meeting->name ?? '' }}</p> <br/>
                     <div class="space-y-3">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-calendar text-[#013f3a]"></i>
                         <span class="font-semibold">
-                            {{ \Carbon\Carbon::parse($meeting->date)->format('l, j F Y') }}
+                            {{ $meeting->date? \Carbon\Carbon::parse($meeting->date)->format('l, j F Y') : ''}}
                         </span>
                     </div>
                     <div class="flex items-center space-x-3">
@@ -305,6 +306,12 @@
                         <span>{{$meeting->location}}</span>
                     </div>
                     </div>
+                    @else
+                    <div class="p-4 rounded bg-[#013f3a]/10">
+                        <p class="text-gray-600 text-center"> No Upcoming Meeting </p>
+
+                    </div>
+                    @endif
                 </div>
                 <a href="{{ route('visitor') }}"
                     class="text-[#ffffff] bg-[#013f3a] px-6 py-3 rounded-lg inline-block hover:bg-orange-400 transition duration-300 font-bold">
