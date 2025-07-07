@@ -6,13 +6,18 @@ use App\Filament\Resources\OneToOneResource\Pages;
 use App\Models\OneToOne;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 class OneToOneResource extends Resource
 {
     protected static ?string $model = OneToOne::class;
@@ -25,26 +30,26 @@ class OneToOneResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
+                Select::make('user_id')
                     ->label('Request Owner')
                     ->relationship('user', 'name')
                     ->required(),
-                Forms\Components\Select::make('met_with')
+                Select::make('met_with')
                     ->label('Met With')
                     ->relationship('metWithUser', 'name')
                     ->required(),
-                Forms\Components\Select::make('initiated_by')
+                Select::make('initiated_by')
                     ->label('Initiated By')
                     ->relationship('initiator', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('meeting_location')
+                TextInput::make('meeting_location')
                     ->label('Meeting Location')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('meeting_date')
+                DatePicker::make('meeting_date')
                     ->label('Meeting Date')
                     ->required(),
-                Forms\Components\Textarea::make('topics')
+                Textarea::make('topics')
                     ->label('Topics Discussed')
                     ->nullable(),
             ]);
@@ -54,6 +59,8 @@ class OneToOneResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('created_at')->label('Requested  At')->date("d-M-y -  m:s:A")->sortable()->searchable(),
+
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Request Owner')
                     ->sortable()
@@ -76,7 +83,20 @@ class OneToOneResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                // Add filters if needed
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('From'),
+                        DatePicker::make('created_until')->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when($data['created_until'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

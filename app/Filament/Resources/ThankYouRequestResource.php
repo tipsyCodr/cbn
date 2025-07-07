@@ -6,9 +6,11 @@ use App\Filament\Resources\ThankYouRequestResource\Pages;
 use App\Filament\Resources\ThankYouRequestResource\RelationManagers;
 use App\Models\ThankYou;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -58,14 +60,42 @@ class ThankYouRequestResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('created_at')->label('Referred At')->date("d-M-y -  m:s:A")->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('From')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('to')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('amount')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('business_type')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('referral_type')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('toUser.name')->label('To')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('amount')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn($state) => 'Rs. '. number_format($state). '/-' ),
+
+                Tables\Columns\TextColumn::make('business_type')->sortable()->searchable()->formatStateUsing(fn($state) => match ($state) {
+                    'new' => 'New',
+                    'repeat' => 'Repear',
+                    '' => 'N/A',
+                    default => ucfirst($state),
+                }),
+                Tables\Columns\TextColumn::make('referral_type')->sortable()->searchable()->formatStateUsing(fn($state) => match ($state) {
+                    'outside' => 'Outside',
+                    'inside' => 'Inside',
+                    'tier3' => 'Tier 3',
+                    default => ucfirst($state),
+                }),
             ])
             ->filters([
-                // Add filters if needed
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('From'),
+                        DatePicker::make('created_until')->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when($data['created_until'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

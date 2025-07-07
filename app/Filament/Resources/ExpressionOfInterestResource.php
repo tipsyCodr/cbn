@@ -6,9 +6,15 @@ use App\Filament\Resources\ExpressionOfInterestResource\Pages;
 use App\Filament\Resources\ExpressionOfInterestResource\RelationManagers;
 use App\Models\ExpressionOfInterest;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,41 +29,45 @@ class ExpressionOfInterestResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Radio::make('form_type') // Added form_type radio group
+                Radio::make('form_type') // Added form_type radio group
                     ->options([
                         'expression_of_interest' => "Yes, I'm ready to get started",
                         'request_for_information' => "Maybe, I would like more information",
                         'feedback_form' => "No, not as of now",
                     ])
                     ->required(),
-                Forms\Components\TextInput::make('full_name')
+                TextInput::make('full_name')
                     ->required(),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->email()
                     ->required(),
-                Forms\Components\TextInput::make('mobile')
+                TextInput::make('mobile')
                     ->tel()
                     ->required(),
-                Forms\Components\TextInput::make('professional_classification')
+                TextInput::make('professional_classification')
                     ->required(),
-                Forms\Components\DatePicker::make('visit_date')
+                DatePicker::make('visit_date')
                     ->required(),
-                Forms\Components\Textarea::make('product_service_feedback')
+                Textarea::make('product_service_feedback')
                     ->required(), // Added required validation
 
-                Forms\Components\TextInput::make('chapter_name') // Added chapter_name field
+                TextInput::make('chapter_name') // Added chapter_name field
                     ->required(),
-                Forms\Components\TextInput::make('region') // Added region field
+                    TextInput::make('company_name')
+                    ->label('Company Name')
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('region') // Added region field
                     ->required(),
-                Forms\Components\TextInput::make('invited_by') // Added invited_by field
+                TextInput::make('invited_by') // Added invited_by field
                     ->required(),
-                Forms\Components\Select::make('previous_member') // Added previous_member field
+                Select::make('previous_member') // Added previous_member field
                     ->options([
                         true => 'Yes',
                         false => 'No',
                     ])
                     ->required(),
-                Forms\Components\Radio::make('experience_rating') // Added experience_rating field
+                Radio::make('experience_rating') // Added experience_rating field
                     ->options([
                         1 => '1',
                         2 => '2',
@@ -73,9 +83,9 @@ class ExpressionOfInterestResource extends Resource
                     ->inline()
                     ->inlineLabel(false)
                     ->required(),
-                Forms\Components\Textarea::make('product_service_feedback') // Added product_service_feedback field
+                Textarea::make('product_service_feedback') // Added product_service_feedback field
                     ->required(),
-                Forms\Components\TextInput::make('referral_source') // Added referral_source field
+                TextInput::make('referral_source') // Added referral_source field
                     ->required(),
             ]);
     }
@@ -84,25 +94,26 @@ class ExpressionOfInterestResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('form_type')
+                ->badge()->label('Interested?')
+                ->sortable()
+                ->colors([
+                    'success' => 'expression_of_interest',
+                    'warning' => 'request_for_information',
+                    'danger' => 'feedback_form',
+                ])
+                ->formatStateUsing(fn($state) => match ($state) {
+                    'expression_of_interest' => 'Yes',
+                    'request_for_information' => 'Maybe',
+                    'feedback_form' => 'No',
+                    default => ucfirst(str_replace('_', ' ', $state)),
+                }),
                 Tables\Columns\TextColumn::make('full_name'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('mobile'),
                 Tables\Columns\TextColumn::make('professional_classification'),
                 Tables\Columns\TextColumn::make('visit_date'),
-                Tables\Columns\TextColumn::make('form_type')
-                    ->badge()
-                    ->sortable()
-                    ->colors([
-                        'success' => 'expression_of_interest',
-                        'warning' => 'request_for_information',
-                        'danger' => 'feedback_form',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'expression_of_interest' => 'Yes',
-                        'request_for_information' => 'Maybe',
-                        'feedback_form' => 'No',
-                        default => ucfirst(str_replace('_', ' ', $state)),
-                    }),
+               
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('form_type')
@@ -111,6 +122,20 @@ class ExpressionOfInterestResource extends Resource
                         'request_for_information' => "Maybe, I would like more information",
                         'feedback_form' => "No, not as of now",
                     ]),
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from')->label('From'),
+                    DatePicker::make('created_until')->label('To'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when($data['created_from'], fn ($query, $date) =>
+                            $query->whereDate('created_at', '>=', $date)
+                        )
+                        ->when($data['created_until'], fn ($query, $date) =>
+                            $query->whereDate('created_at', '<=', $date)
+                        );
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

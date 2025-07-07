@@ -6,12 +6,14 @@ use App\Filament\Resources\ReferralResource\Pages;
 use App\Filament\Resources\ReferralResource\RelationManagers;
 use App\Models\Referral;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\Filter;
 
 class ReferralResource extends Resource
 {
@@ -60,7 +62,9 @@ class ReferralResource extends Resource
                     ->nullable(),
                 Forms\Components\TextInput::make('referral_hotness')
                     ->numeric(),
-               
+                Forms\Components\DateTimePicker::make('created_at')
+                    ->label("Happened At")
+                    ->disabled(true)
             ]);
     }
 
@@ -68,10 +72,17 @@ class ReferralResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->label('Referring')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('user.name')->label('Referred')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('referral_type')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('referral_status')->sortable()->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')->label('Referred At')->date("d-M-y -  m:s:A")->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('user.name')->label('From')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('referredUser.name')->label('To')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('referral_type')->sortable()->searchable()->formatStateUsing(fn ($state) => match ($state) {
+                    'outside' => 'Outside',
+                    'inside' => 'Inside',
+                    'tier3' => 'Tier 3',
+                    default => ucfirst($state),
+                }),
+                // Tables\Columns\TextColumn::make('referral_status')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('referral_contact_name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('referral_contact_no')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->sortable()->searchable(),
@@ -81,8 +92,22 @@ class ReferralResource extends Resource
                 Tables\Columns\TextColumn::make('referral_hotness')->sortable()->searchable(),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('From'),
+                        DatePicker::make('created_until')->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when($data['created_until'], fn ($query, $date) =>
+                                $query->whereDate('created_at', '<=', $date)
+                            );
+                    }),
             ])
+            
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -96,7 +121,7 @@ class ReferralResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 
