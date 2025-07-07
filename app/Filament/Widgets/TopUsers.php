@@ -3,43 +3,32 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Chapter;
-use App\Models\OneToOne;
-use App\Models\Referral;
-use App\Models\ThankYou;
 use App\Models\User;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class TopUsers extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 3;
 
-
     protected function getTableHeading(): string
     {
         return 'Top Users';
     }
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                User::query()
-                    ->where('role', 'user')
-                    ->selectRaw('users.*, 
-                        (SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id) as total_tyfcb,
-                        (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id) as total_referrals,
-                        (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id) as total_oto,
-                        ((SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id) +
-                         (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id) +
-                         (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id)) as total_requests'
-                    )
-                    ->orderByDesc('total_requests')
-            )
+            ->query(function (): Builder {
+                return User::query()->where('role', 'user');
+            })
             ->filters([
                 Filter::make('created_at')
                     ->form([
@@ -47,18 +36,182 @@ class TopUsers extends BaseWidget
                         DatePicker::make('until')->label('Until'),
                     ])
                     ->query(function ($query, array $data) {
-                        return $query
-                            ->when($data['from'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
-                            ->when($data['until'] ?? null, fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                        // We don't need to modify the main query since we're handling filtering in columns
+                        return $query;
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if (!empty($data['from'])) {
+                            $indicators[] = 'From: ' . Carbon::parse($data['from'])->format('M d, Y');
+                        }
+
+                        if (!empty($data['until'])) {
+                            $indicators[] = 'Until: ' . Carbon::parse($data['until'])->format('M d, Y');
+                        }
+
+                        return $indicators;
                     }),
             ])
-            ->defaultSort('total_requests', 'desc')
             ->columns([
-                TextColumn::make('name')->label('Member')->searchable()->sortable(),
-                TextColumn::make('total_requests')->label('Total Requests')->sortable(),
-                TextColumn::make('total_tyfcb')->label('Total TYFCB')->sortable(),
-                TextColumn::make('total_referrals')->label('Total Referrals')->sortable(),
-                TextColumn::make('total_oto')->label('Total One To One')->sortable(),
-            ]);
+                TextColumn::make('name')
+                    ->label('Member')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('total_requests')
+                    ->label('Total Requests')
+                    ->getStateUsing(function (User $record, $livewire): int {
+                        return $this->getTotalRequests($record, $livewire);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'total_requests');
+                    }),
+
+                TextColumn::make('total_tyfcb')
+                    ->label('Total TYFCB')
+                    ->getStateUsing(function (User $record, $livewire): int {
+                        return $this->getTotalTYFCB($record, $livewire);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'total_tyfcb');
+                    }),
+
+                TextColumn::make('total_referrals')
+                    ->label('Total Referrals')
+                    ->getStateUsing(function (User $record, $livewire): int {
+                        return $this->getTotalReferrals($record, $livewire);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'total_referrals');
+                    }),
+
+                TextColumn::make('total_oto')
+                    ->label('Total One To One')
+                    ->getStateUsing(function (User $record, $livewire): int {
+                        return $this->getTotalOTO($record, $livewire);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'total_oto');
+                    }),
+            ])
+            ->defaultSort('total_requests', 'desc');
+    }
+
+    private function getFilterDates($livewire): array
+    {
+        $filters = $livewire->tableFilters ?? [];
+        $dateFilter = $filters['created_at'] ?? [];
+        
+        $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
+        $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
+
+        return [$from, $until];
+    }
+
+    private function getTotalTYFCB(User $record, $livewire): int
+    {
+        [$from, $until] = $this->getFilterDates($livewire);
+
+        $query = DB::table('tyfcb_requests')
+            ->where('from', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
+    }
+
+    private function getTotalReferrals(User $record, $livewire): int
+    {
+        [$from, $until] = $this->getFilterDates($livewire);
+
+        $query = DB::table('referrals')
+            ->where('from', $record->id);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
+    }
+
+    private function getTotalOTO(User $record, $livewire): int
+    {
+        [$from, $until] = $this->getFilterDates($livewire);
+
+        $query = DB::table('oto_requests')
+            ->where('user_id', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
+    }
+
+    private function getTotalRequests(User $record, $livewire): int
+    {
+        return $this->getTotalTYFCB($record, $livewire) + 
+               $this->getTotalReferrals($record, $livewire) + 
+               $this->getTotalOTO($record, $livewire);
+    }
+
+    private function applySortingWithFilters(Builder $query, string $direction, string $column): Builder
+    {
+        // Get current filters from the widget
+        $filters = $this->tableFilters ?? [];
+        $dateFilter = $filters['created_at'] ?? [];
+        
+        $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
+        $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
+
+        // Build the date condition for subqueries
+        $dateCondition = '';
+        $bindings = [];
+        
+        if ($from) {
+            $dateCondition .= ' AND created_at >= ?';
+            $bindings[] = $from;
+        }
+        if ($until) {
+            $dateCondition .= ' AND created_at <= ?';
+            $bindings[] = $until;
+        }
+
+        switch ($column) {
+            case 'total_tyfcb':
+                return $query->selectRaw('users.*, (SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') as total_tyfcb_count', $bindings)
+                    ->orderBy('total_tyfcb_count', $direction);
+                
+            case 'total_referrals':
+                return $query->selectRaw('users.*, (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id' . $dateCondition . ') as total_referrals_count', $bindings)
+                    ->orderBy('total_referrals_count', $direction);
+                
+            case 'total_oto':
+                return $query->selectRaw('users.*, (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ') as total_oto_count', $bindings)
+                    ->orderBy('total_oto_count', $direction);
+                
+            case 'total_requests':
+            default:
+                return $query->selectRaw('users.*, 
+                    ((SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') +
+                     (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id' . $dateCondition . ') +
+                     (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ')) as total_requests_count', 
+                    array_merge($bindings, $bindings, $bindings))
+                    ->orderBy('total_requests_count', $direction);
+        }
     }
 }
