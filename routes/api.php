@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\ThankYouController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\MeetingController;
+use App\Http\Controllers\Api\VisitorController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,7 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('worldwide-users', [UserController::class, 'globalUsers'])->name('users.global');
     Route::get('requests', [UserController::class, 'getAllRequests'])->name('user.requests');
     Route::get('categories', [UserController::class, 'getCategories'])->name('categories.index');
-
+    
+    Route::post('visitor/store', [VisitorController::class, 'store'])->name('categories.index');
     
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
     Route::post('update-profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->name('update.profile');
