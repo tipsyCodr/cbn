@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Collection;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class UserResource extends Resource
 {
@@ -92,7 +93,7 @@ class UserResource extends Resource
                         'moderator' => 'Moderator',
                     ])
                     ->visible(fn () => Auth::user()?->role === 'admin'),
-            ]); 
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -123,6 +124,9 @@ class UserResource extends Resource
                     ->visible(fn () => Auth::user()?->role !== 'moderator'),
             ])
             ->bulkActions([
+
+                ExportBulkAction::make(),
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->visible(fn () => Auth::user()?->role !== 'moderator'),

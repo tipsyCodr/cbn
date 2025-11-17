@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1",
         "phpmailer/phpmailer": "^6.10",
+        "pxlrbt/filament-excel": "^2.5",
         "saade/filament-fullcalendar": "^3.2"
     },
     "require-dev": {
