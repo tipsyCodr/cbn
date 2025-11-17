@@ -18,6 +18,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ExpressionOfInterestResource extends Resource
 {
@@ -113,7 +114,7 @@ class ExpressionOfInterestResource extends Resource
                 Tables\Columns\TextColumn::make('mobile'),
                 Tables\Columns\TextColumn::make('professional_classification'),
                 Tables\Columns\TextColumn::make('visit_date'),
-               
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('form_type')
@@ -141,6 +142,7 @@ class ExpressionOfInterestResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

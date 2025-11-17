@@ -13,15 +13,16 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class PaymentDetailsResource extends Resource
 {
     protected static ?string $model = PaymentDetails::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-    
+
     protected static ?string $navigationLabel = 'Payment Details';
-    
+
     protected static ?string $navigationGroup = 'Membership Management';
 
     public static function form(Form $form): Form
@@ -33,19 +34,19 @@ class PaymentDetailsResource extends Resource
                     ->options(User::pluck('name', 'id'))
                     ->searchable()
                     ->required(),
-                    
+
                 Forms\Components\Textarea::make('payment_details')
                     ->label('Payment Details')
                     ->required()
                     ->columnSpanFull(),
-                    
+
                 Forms\Components\FileUpload::make('payment_screenshot')
                     ->label('Payment Screenshot')
                     ->image()
                     ->directory('payment_screenshots')
                     ->required()
                     ->columnSpanFull(),
-                    
+
                 Forms\Components\Textarea::make('other_details')
                     ->label('Other Details')
                     ->columnSpanFull(),
@@ -60,18 +61,18 @@ class PaymentDetailsResource extends Resource
                     ->label('Member Name')
                     ->searchable()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('payment_details')
                     ->label('Payment Details')
                     ->limit(50)
                     ->searchable()
                     ->wrap(),
-                    
+
                 Tables\Columns\ImageColumn::make('payment_screenshot')
                     ->label('Payment Screenshot')
                     ->height(50)
                     ->circular(),
-                    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Submission Date')
                     ->dateTime()
@@ -89,6 +90,8 @@ class PaymentDetailsResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

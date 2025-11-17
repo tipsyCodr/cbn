@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\Filter;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ReferralResource extends Resource
 {
@@ -107,11 +108,13 @@ class ReferralResource extends Resource
                             );
                     }),
             ])
-            
+
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -121,7 +124,7 @@ class ReferralResource extends Resource
     public static function getRelations(): array
     {
         return [
-            
+
         ];
     }
 
@@ -133,5 +136,5 @@ class ReferralResource extends Resource
             'edit' => Pages\EditReferral::route('/{record}/edit'),
         ];
     }
-   
+
 }

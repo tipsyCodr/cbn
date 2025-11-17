@@ -18,12 +18,13 @@ use Filament\Forms\Components\TextInput;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class OneToOneResource extends Resource
 {
     protected static ?string $model = OneToOne::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    
+
     protected static ?string $navigationLabel = 'One to One Meetings';
 
     public static function form(Form $form): Form
@@ -103,6 +104,8 @@ class OneToOneResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -124,4 +127,4 @@ class OneToOneResource extends Resource
             'edit' => Pages\EditOneToOne::route('/{record}/edit'),
         ];
     }
-} 
+}
