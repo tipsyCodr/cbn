@@ -86,6 +86,15 @@ class TopUsers extends BaseWidget
                         return $this->applySortingWithFilters($query, $direction, 'total_business');
                     }),
 
+                TextColumn::make('revenue_received')
+                    ->label('Revenue Received')
+                    ->getStateUsing(function (User $record, $livewire): string {
+                        return '₹' . number_format($this->getRevenueReceived($record, $livewire), 2);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'revenue_received');
+                    }),
+
                 TextColumn::make('total_referrals')
                     ->label('Total Referrals')
                     ->getStateUsing(function (User $record, $livewire): int {
@@ -142,6 +151,24 @@ class TopUsers extends BaseWidget
 
         $query = DB::table('tyfcb_requests')
             ->where('from', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return (float) $query->sum('amount');
+    }
+
+    private function getRevenueReceived(User $record, $livewire): float
+    {
+        [$from, $until] = $this->getFilterDates($livewire);
+
+        $query = DB::table('tyfcb_requests')
+            ->where('to', $record->id)
             ->where('active', 1);
 
         if ($from) {
@@ -234,6 +261,10 @@ class TopUsers extends BaseWidget
             case 'total_business':
                 return $query->selectRaw('users.*, (SELECT COALESCE(SUM(amount), 0) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') as total_business_amount', $bindings)
                     ->orderBy('total_business_amount', $direction);
+
+            case 'revenue_received':
+                return $query->selectRaw('users.*, (SELECT COALESCE(SUM(amount), 0) FROM tyfcb_requests WHERE tyfcb_requests.to = users.id AND active = 1' . $dateCondition . ') as revenue_received_amount', $bindings)
+                    ->orderBy('revenue_received_amount', $direction);
 
             case 'total_requests':
             default:
