@@ -4,7 +4,7 @@
     <!-- Start Generation Here -->
     <div class="max-w-6xl mx-auto py-10">
         <div class="container mx-auto">
-            <h1 class="text-2xl font-bold">Visitor</h1>
+            <h1 class="text-2xl px-6 font-bold">Visitor</h1>
         </div>
         <form action="{{ route('visitor.register') }}" method="POST" class="mt-4 px-6">
             @csrf
