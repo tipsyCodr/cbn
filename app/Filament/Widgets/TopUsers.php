@@ -80,7 +80,7 @@ class TopUsers extends BaseWidget
                 TextColumn::make('total_business')
                     ->label(' Revenue Received')
                     ->getStateUsing(function (User $record, $livewire): string {
-                        return '₹' . number_format($this->getTotalBusiness($record, $livewire), 2);
+                        return '₹' . $this->formatIndianCurrency($this->getTotalBusiness($record, $livewire));
                     })
                     ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
                         return $this->applySortingWithFilters($query, $direction, 'total_business');
@@ -89,7 +89,7 @@ class TopUsers extends BaseWidget
                 TextColumn::make('revenue_received')
                     ->label('Business Given')
                     ->getStateUsing(function (User $record, $livewire): string {
-                        return '₹' . number_format($this->getRevenueReceived($record, $livewire), 2);
+                        return '₹' . $this->formatIndianCurrency($this->getRevenueReceived($record, $livewire));
                     })
                     ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
                         return $this->applySortingWithFilters($query, $direction, 'revenue_received');
@@ -125,6 +125,41 @@ class TopUsers extends BaseWidget
         $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
 
         return [$from, $until];
+    }
+
+    private function formatIndianCurrency(float $number): string
+    {
+        $number = round($number, 2);
+        $isNegative = $number < 0;
+        $number = abs($number);
+        
+        $decimal = '';
+        if (strpos((string) $number, '.') !== false) {
+            $parts = explode('.', (string) $number);
+            $number = (float) $parts[0];
+            $decimal = '.' . str_pad($parts[1] ?? '00', 2, '0');
+        } else {
+            $decimal = '.00';
+        }
+        
+        $number = (int) $number;
+        
+        if ($number < 1000) {
+            return ($isNegative ? '-' : '') . $number . $decimal;
+        }
+        
+        // Last 3 digits
+        $lastThree = substr((string) $number, -3);
+        $remaining = substr((string) $number, 0, -3);
+        
+        // Add commas for every 2 digits in the remaining part
+        if ($remaining !== '' && $remaining !== false) {
+            $remaining = preg_replace('/\B(?=(\d{2})+(?!\d))/', ',', $remaining);
+            return ($isNegative ? '-' : '') . $remaining . ',' . $lastThree . $decimal;
+        }
+        
+        return ($isNegative ? '-' : '') . $lastThree . $decimal;
+    }
     }
 
     private function getTotalTYFCB(User $record, $livewire): int
