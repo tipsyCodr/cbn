@@ -132,7 +132,7 @@ class TopUsers extends BaseWidget
         $number = round($number, 2);
         $isNegative = $number < 0;
         $number = abs($number);
-        
+
         $decimal = '';
         if (strpos((string) $number, '.') !== false) {
             $parts = explode('.', (string) $number);
@@ -141,25 +141,24 @@ class TopUsers extends BaseWidget
         } else {
             $decimal = '.00';
         }
-        
+
         $number = (int) $number;
-        
+
         if ($number < 1000) {
             return ($isNegative ? '-' : '') . $number . $decimal;
         }
-        
+
         // Last 3 digits
         $lastThree = substr((string) $number, -3);
         $remaining = substr((string) $number, 0, -3);
-        
+
         // Add commas for every 2 digits in the remaining part
         if ($remaining !== '' && $remaining !== false) {
             $remaining = preg_replace('/\B(?=(\d{2})+(?!\d))/', ',', $remaining);
             return ($isNegative ? '-' : '') . $remaining . ',' . $lastThree . $decimal;
         }
-        
+
         return ($isNegative ? '-' : '') . $lastThree . $decimal;
-    }
     }
 
     private function getTotalTYFCB(User $record, $livewire): int
