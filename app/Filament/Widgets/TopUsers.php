@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class TopUsers extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
     protected static ?int $sort = 3;
 
     protected function getTableHeading(): string
@@ -77,6 +77,15 @@ class TopUsers extends BaseWidget
                         return $this->applySortingWithFilters($query, $direction, 'total_tyfcb');
                     }),
 
+                TextColumn::make('total_business')
+                    ->label('Total Business')
+                    ->getStateUsing(function (User $record, $livewire): string {
+                        return '₹' . number_format($this->getTotalBusiness($record, $livewire), 2);
+                    })
+                    ->sortable(query: function (Builder $query, string $direction) use ($table): Builder {
+                        return $this->applySortingWithFilters($query, $direction, 'total_business');
+                    }),
+
                 TextColumn::make('total_referrals')
                     ->label('Total Referrals')
                     ->getStateUsing(function (User $record, $livewire): int {
@@ -102,7 +111,7 @@ class TopUsers extends BaseWidget
     {
         $filters = $livewire->tableFilters ?? [];
         $dateFilter = $filters['created_at'] ?? [];
-        
+
         $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
         $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
 
@@ -125,6 +134,24 @@ class TopUsers extends BaseWidget
         }
 
         return $query->count();
+    }
+
+    private function getTotalBusiness(User $record, $livewire): float
+    {
+        [$from, $until] = $this->getFilterDates($livewire);
+
+        $query = DB::table('tyfcb_requests')
+            ->where('from', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return (float) $query->sum('amount');
     }
 
     private function getTotalReferrals(User $record, $livewire): int
@@ -164,9 +191,9 @@ class TopUsers extends BaseWidget
 
     private function getTotalRequests(User $record, $livewire): int
     {
-        return $this->getTotalTYFCB($record, $livewire) + 
-               $this->getTotalReferrals($record, $livewire) + 
-               $this->getTotalOTO($record, $livewire);
+        return $this->getTotalTYFCB($record, $livewire) +
+            $this->getTotalReferrals($record, $livewire) +
+            $this->getTotalOTO($record, $livewire);
     }
 
     private function applySortingWithFilters(Builder $query, string $direction, string $column): Builder
@@ -174,14 +201,14 @@ class TopUsers extends BaseWidget
         // Get current filters from the widget
         $filters = $this->tableFilters ?? [];
         $dateFilter = $filters['created_at'] ?? [];
-        
+
         $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
         $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
 
         // Build the date condition for subqueries
         $dateCondition = '';
         $bindings = [];
-        
+
         if ($from) {
             $dateCondition .= ' AND created_at >= ?';
             $bindings[] = $from;
@@ -195,22 +222,27 @@ class TopUsers extends BaseWidget
             case 'total_tyfcb':
                 return $query->selectRaw('users.*, (SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') as total_tyfcb_count', $bindings)
                     ->orderBy('total_tyfcb_count', $direction);
-                
+
             case 'total_referrals':
                 return $query->selectRaw('users.*, (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id' . $dateCondition . ') as total_referrals_count', $bindings)
                     ->orderBy('total_referrals_count', $direction);
-                
+
             case 'total_oto':
                 return $query->selectRaw('users.*, (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ') as total_oto_count', $bindings)
                     ->orderBy('total_oto_count', $direction);
-                
+
+            case 'total_business':
+                return $query->selectRaw('users.*, (SELECT COALESCE(SUM(amount), 0) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') as total_business_amount', $bindings)
+                    ->orderBy('total_business_amount', $direction);
+
             case 'total_requests':
             default:
                 return $query->selectRaw('users.*, 
                     ((SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') +
                      (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id' . $dateCondition . ') +
-                     (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ')) as total_requests_count', 
-                    array_merge($bindings, $bindings, $bindings))
+                     (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ')) as total_requests_count',
+                    array_merge($bindings, $bindings, $bindings)
+                )
                     ->orderBy('total_requests_count', $direction);
         }
     }
