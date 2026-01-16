@@ -87,7 +87,7 @@ class TopUsers extends BaseWidget
                     }),
 
                 TextColumn::make('revenue_received')
-                    ->label('Total Business')
+                    ->label('Business Given')
                     ->getStateUsing(function (User $record, $livewire): string {
                         return '₹' . number_format($this->getRevenueReceived($record, $livewire), 2);
                     })
