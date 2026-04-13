@@ -23,12 +23,12 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
     // Auth Routes
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    
+
     // User Routes
     Route::get('user', function (Request $request) {
         return $request->user();
     })->name('user');
-    
+
 
     Route::get('home', [UserController::class, 'home'])->name('user.home');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -36,15 +36,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('worldwide-users', [UserController::class, 'globalUsers'])->name('users.global');
     Route::get('requests', [UserController::class, 'getAllRequests'])->name('user.requests');
     Route::get('categories', [UserController::class, 'getCategories'])->name('categories.index');
-    
-    Route::post('visitor/store', [VisitorController::class, 'store'])->name('categories.index');
-    
+
+    Route::post('visitor/store', [VisitorController::class, 'store'])->name('visitor.store');
+
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
     Route::post('update-profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->name('update.profile');
     Route::post('update-profile-photo', [App\Http\Controllers\Api\UserController::class, 'updateProfilePic'])->name('update.profile');
-    
+
     Route::post('get-profile', [App\Http\Controllers\Api\UserController::class, 'getProfile'])->name('get.profile');
-    
+
     // Notification Routes
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
@@ -53,13 +53,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
         Route::post('/clear/{id}', [NotificationController::class, 'clearNotification'])->name('clear');
     });
-    
+
     // Meeting Routes
     Route::prefix('meetings')->name('meetings.')->group(function () {
         Route::get('/next', [MeetingController::class, 'getNextMeeting'])->name('next');
         Route::get('/upcoming', [MeetingController::class, 'getUpcomingMeetings'])->name('upcoming');
     });
-    
+
     // Referral Routes
     Route::prefix('referrals')->name('referrals.')->group(function () {
         Route::get('/', [ReferralController::class, 'index'])->name('index');

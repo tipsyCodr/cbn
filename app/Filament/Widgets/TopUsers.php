@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Chapter;
 use App\Models\User;
+use App\Exports\TopUsersExport;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -12,6 +13,9 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Filament\Tables\Actions\Action;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
 
 class TopUsers extends BaseWidget
 {
@@ -113,16 +117,139 @@ class TopUsers extends BaseWidget
                         return $this->applySortingWithFilters($query, $direction, 'total_oto');
                     }),
             ])
+            ->headerActions([
+                Action::make('export')
+                    ->label('Export to Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action('exportToExcel')
+                    ->color('success'),
+            ])
             ->defaultSort('total_requests', 'desc');
+    }
+
+    public function exportToExcel(): void
+    {
+        $fileName = 'top-users-' . Carbon::now()->format('Y-m-d-H-i-s') . '.xlsx';
+
+        Excel::download(
+            new TopUsersExport($this->getFilterDates(null)),
+            $fileName
+        );
+    }
+
+    public function getExportData(): Collection
+    {
+        [$from, $until] = $this->getFilterDates(null);
+        $users = User::where('role', 'user')->get();
+
+        $data = $users->map(function (User $user) use ($from, $until) {
+            return [
+                'name' => $user->name,
+                'total_requests' => $this->getTotalRequestsWithDates($user, $from, $until),
+                'total_tyfcb' => $this->getTotalTYFCBWithDates($user, $from, $until),
+                'revenue_received' => $this->getTotalBusinessWithDates($user, $from, $until),
+                'business_given' => $this->getRevenueReceivedWithDates($user, $from, $until),
+                'total_referrals' => $this->getTotalReferralsWithDates($user, $from, $until),
+                'total_oto' => $this->getTotalOTOWithDates($user, $from, $until),
+            ];
+        });
+
+        return $data;
+    }
+
+    private function getTotalRequestsWithDates(User $record, ?Carbon $from, ?Carbon $until): int
+    {
+        return $this->getTotalTYFCBWithDates($record, $from, $until) +
+            $this->getTotalReferralsWithDates($record, $from, $until) +
+            $this->getTotalOTOWithDates($record, $from, $until);
+    }
+
+    private function getTotalTYFCBWithDates(User $record, ?Carbon $from, ?Carbon $until): int
+    {
+        $query = DB::table('tyfcb_requests')
+            ->where('from', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
+    }
+
+    private function getTotalBusinessWithDates(User $record, ?Carbon $from, ?Carbon $until): float
+    {
+        $query = DB::table('tyfcb_requests')
+            ->where('from', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return (float) $query->sum('amount');
+    }
+
+    private function getRevenueReceivedWithDates(User $record, ?Carbon $from, ?Carbon $until): float
+    {
+        $query = DB::table('tyfcb_requests')
+            ->where('to', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return (float) $query->sum('amount');
+    }
+
+    private function getTotalReferralsWithDates(User $record, ?Carbon $from, ?Carbon $until): int
+    {
+        $query = DB::table('referrals')
+            ->where('from', $record->id);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
+    }
+
+    private function getTotalOTOWithDates(User $record, ?Carbon $from, ?Carbon $until): int
+    {
+        $query = DB::table('oto_requests')
+            ->where('user_id', $record->id)
+            ->where('active', 1);
+
+        if ($from) {
+            $query->where('created_at', '>=', $from);
+        }
+        if ($until) {
+            $query->where('created_at', '<=', $until);
+        }
+
+        return $query->count();
     }
 
     private function getFilterDates($livewire): array
     {
-        $filters = $livewire->tableFilters ?? [];
-        $dateFilter = $filters['created_at'] ?? [];
+        $filter = $this->getTable()?->getFilter('created_at');
+        $state = $filter?->getState() ?? [];
 
-        $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
-        $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
+        $from = !empty($state['from']) ? Carbon::parse($state['from'])->startOfDay() : null;
+        $until = !empty($state['until']) ? Carbon::parse($state['until'])->endOfDay() : null;
 
         return [$from, $until];
     }
@@ -260,11 +387,11 @@ class TopUsers extends BaseWidget
     private function applySortingWithFilters(Builder $query, string $direction, string $column): Builder
     {
         // Get current filters from the widget
-        $filters = $this->tableFilters ?? [];
-        $dateFilter = $filters['created_at'] ?? [];
+        $filter = $this->getTable()->getFilter('created_at');
+        $state = $filter?->getState() ?? [];
 
-        $from = !empty($dateFilter['from']) ? Carbon::parse($dateFilter['from'])->startOfDay() : null;
-        $until = !empty($dateFilter['until']) ? Carbon::parse($dateFilter['until'])->endOfDay() : null;
+        $from = !empty($state['from']) ? Carbon::parse($state['from'])->startOfDay() : null;
+        $until = !empty($state['until']) ? Carbon::parse($state['until'])->endOfDay() : null;
 
         // Build the date condition for subqueries
         $dateCondition = '';
@@ -302,7 +429,7 @@ class TopUsers extends BaseWidget
 
             case 'total_requests':
             default:
-                return $query->selectRaw('users.*, 
+                return $query->selectRaw('users.*,
                     ((SELECT COUNT(*) FROM tyfcb_requests WHERE tyfcb_requests.from = users.id AND active = 1' . $dateCondition . ') +
                      (SELECT COUNT(*) FROM referrals WHERE referrals.from = users.id' . $dateCondition . ') +
                      (SELECT COUNT(*) FROM oto_requests WHERE oto_requests.user_id = users.id AND active = 1' . $dateCondition . ')) as total_requests_count',
