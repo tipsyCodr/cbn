@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Filament\Tables\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TopUsers extends BaseWidget
 {
@@ -127,11 +128,11 @@ class TopUsers extends BaseWidget
             ->defaultSort('total_requests', 'desc');
     }
 
-    public function exportToExcel(): void
+    public function exportToExcel()
     {
         $fileName = 'top-users-' . Carbon::now()->format('Y-m-d-H-i-s') . '.xlsx';
 
-        Excel::download(
+        return Excel::download(
             new TopUsersExport($this->getFilterDates(null)),
             $fileName
         );
