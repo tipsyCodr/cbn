@@ -45,7 +45,7 @@ class UserController extends Controller
         $categories = User::whereNotNull('category')->distinct()->pluck('category');
         return response()->json(['categories' => $categories], 200);
     }
-    
+
     public function profile(){
         $user = auth()->user();
         return response()->json([
@@ -103,7 +103,7 @@ class UserController extends Controller
     public function getProfile(Request $request)
     {
        try{
-            // $request = json_decode($request);    
+            // $request = json_decode($request);
             $id = $request->id;
 
             $user = User::findOrFail($id);
@@ -195,7 +195,7 @@ class UserController extends Controller
 
         } catch(Exception $e){
             return  'Error: Failed to fetch thank you requests';
-           
+
         }
 
     }
@@ -207,14 +207,14 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'User not found'
                 ], 404);
             }
-            
+
             // Calculate time periods
             $now = Carbon::now();
             $startOfWeek = $now->startOfWeek();
@@ -229,11 +229,11 @@ class UserController extends Controller
             $referralsReceivedSixMonth = Referral::where('to', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
-                
+
             $referralsSixMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
-                
+
             $referralsReceivedTwelveMonth = Referral::where('to', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
@@ -241,7 +241,7 @@ class UserController extends Controller
             $referralsTwelveMonths = Referral::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
-                
+
             $referralsLifetime = Referral::where('from', $user->id)->count();
 
             $referralsReceivedLifetime = Referral::where('to', $user->id)->count();
@@ -250,54 +250,54 @@ class UserController extends Controller
             $tyfcbThisWeek = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
                 ->count();
-                
+
             $tyfcbSixMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->sum('amount'); // Assuming 'amount' is the column to total
-            
+
             $tyfcbTwelveMonths = ThankYou::where('from', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->sum('amount'); // Assuming 'amount' is the column to total
-            
+
             $tyfcbLifetime = ThankYou::where('from', $user->id)->sum('amount'); // Assuming 'amount' is the column to total
-            
+
             //Revenue Recieved Data
             $revenueSixMonths = ThankYou::where('to', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->sum('amount'); // Assuming 'amount' is the column to total
-            
+
             $revenueTwelveMonths = ThankYou::where('to', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->sum('amount'); // Assuming 'amount' is the column to total
-            
+
             $revenueLifetime = ThankYou::where('to', $user->id)->sum('amount'); // Assuming 'amount' is the column to total
 
             // One-to-One stats
             $otoThisWeek = OneToOne::where('user_id', $user->id)
                 ->where('created_at', '>=', $startOfWeek)
                 ->count();
-                
+
             $otoSixMonths = OneToOne::where('user_id', $user->id)
                 ->where('created_at', '>=', $sixMonthsAgo)
                 ->count();
-                
+
             $otoTwelveMonths = OneToOne::where('user_id', $user->id)
                 ->where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
-                
+
             $otoLifetime = OneToOne::where('user_id', $user->id)->count();
-            
+
             $visitorsThisWeek = Visitor::where('created_at', '>=', $startOfWeek)
                 ->count();
-                
-            $visitorsSixMonths = Visitor::where('created_at', '>=', $sixMonthsAgo)  
+
+            $visitorsSixMonths = Visitor::where('created_at', '>=', $sixMonthsAgo)
                 ->count();
-                
+
             $visitorsTwelveMonths = Visitor::where('created_at', '>=', $twelveMonthsAgo)
                 ->count();
-                
+
             $visitorsLifetime = Visitor::count();
- 
+
             // Return user details
             return response()->json([
                 'status' => 'success',
@@ -329,13 +329,14 @@ class UserController extends Controller
                             'twelve_months' => $referralsReceivedTwelveMonth,
                             'lifetime' => $referralsReceivedLifetime
                         ],
-                        'tyfcb' => [
+            //currently swapping tyfcb and revenue received as they are both based on the same data but with different filters, will update once we have a clear distinction between the two
+                        'revenue_received' => [
                             'this_week' => $tyfcbThisWeek,
                             'six_months' => $tyfcbSixMonths,
                             'twelve_months' => $tyfcbTwelveMonths,
                             'lifetime' => $tyfcbLifetime
                         ],
-                        'revenue_received' => [
+                        'tyfcb' => [
                             'six_months' => $revenueSixMonths,
                             'twelve_months' => $revenueTwelveMonths,
                             'lifetime' => $revenueLifetime,
@@ -371,7 +372,7 @@ class UserController extends Controller
     {
         try {
             $userId = $request->user()->id;
-            
+
             // Get referrals
             $sentReferrals = Referral::where('from', $userId)
                 ->get()
@@ -484,7 +485,7 @@ class UserController extends Controller
             $userIds = $allRequests->pluck('from')
                 ->concat($allRequests->pluck('to'))
                 ->unique();
-            
+
             $users = User::whereIn('id', $userIds)
                 ->get(['id', 'name', 'email', 'profile_photo'])
                 ->keyBy('id');
