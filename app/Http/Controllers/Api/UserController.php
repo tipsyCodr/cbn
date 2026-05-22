@@ -329,7 +329,7 @@ class UserController extends Controller
                             'twelve_months' => $referralsReceivedTwelveMonth,
                             'lifetime' => $referralsReceivedLifetime
                         ],
-            //currently swapping tyfcb and revenue received as they are both based on the same data but with different filters, will update once we have a clear distinction between the two
+                        //currently swapping tyfcb and revenue received as they are both based on the same data but with different filters, will update once we have a clear distinction between the two
                         'revenue_received' => [
                             'this_week' => $tyfcbThisWeek,
                             'six_months' => $tyfcbSixMonths,
