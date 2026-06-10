@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ThankYou extends Model
 {
     protected $table = 'tyfcb_requests';
-    protected $fillable = ['from', 'to', 'amount', 'business_type', 'referral_type','comments','active'];
+    protected $fillable = ['from', 'to', 'amount', 'business_type', 'referral_type','comments','active', 'referral_id'];
     
     /**
      * The attributes that should be cast.
@@ -25,5 +25,9 @@ class ThankYou extends Model
     
     public function toUser(){
         return $this->belongsTo(User::class, 'to');
+    }
+
+    public function referral(){
+        return $this->belongsTo(Referral::class, 'referral_id');
     }
 }
