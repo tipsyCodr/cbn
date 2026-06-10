@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('visitor/store', [VisitorController::class, 'store'])->name('visitor.store');
 
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('user/invite-details', [UserController::class, 'getInviteDetails'])->name('user.invite.details');
     Route::post('update-profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->name('update.profile');
     Route::post('update-profile-photo', [App\Http\Controllers\Api\UserController::class, 'updateProfilePic'])->name('update.profile.photo');
 

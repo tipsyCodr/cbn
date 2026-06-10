@@ -54,6 +54,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function getInviteDetails(Request $request)
+    {
+        $user = $request->user();
+        if (empty($user->invite_code)) {
+            $user->invite_code = User::generateUniqueInviteCode();
+            $user->save();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'invite_code' => $user->invite_code,
+            'invite_link' => route('visitor', ['ref' => $user->invite_code]),
+        ]);
+    }
+
     public function updateProfile(Request $request){
         $user = auth()->user();
         $validate = Validator::make($request->all(), [
