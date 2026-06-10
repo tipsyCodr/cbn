@@ -8,6 +8,7 @@
         </div>
         <form action="{{ route('visitor.register') }}" method="POST" class="mt-4 px-6">
             @csrf
+            <input type="hidden" name="invite_code" value="{{ request()->query('ref') }}">
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input type="text" name="name" id="name" required

@@ -35,8 +35,28 @@ class User extends Authenticatable
         'due_date',
         'active',
         'role',
-        'chapter_id'
+        'chapter_id',
+        'invite_code'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($user) {
+            if (empty($user->invite_code)) {
+                $user->invite_code = self::generateUniqueInviteCode();
+            }
+        });
+    }
+
+    public static function generateUniqueInviteCode()
+    {
+        do {
+            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+        } while (self::where('invite_code', $code)->exists());
+
+        return $code;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

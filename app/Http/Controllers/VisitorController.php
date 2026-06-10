@@ -21,7 +21,13 @@ class VisitorController extends Controller
             'address' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
+            'invite_code' => 'nullable|string|exists:users,invite_code',
         ]);
+
+        $referrer = null;
+        if ($request->filled('invite_code')) {
+            $referrer = \App\Models\User::where('invite_code', $request->invite_code)->first();
+        }
 
         $visitor = Visitor::create([
             'name' => $request->name,
@@ -31,6 +37,7 @@ class VisitorController extends Controller
             'company' => $request->company,
             'position' => $request->position,
             'status' => 'registered', // Assuming a default status
+            'invited_by' => $referrer ? $referrer->id : null,
         ]);
         $visitor->notify(new VisitorRegistered($visitor));
 
