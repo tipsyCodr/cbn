@@ -43,4 +43,13 @@ class VisitorController extends Controller
 
         return redirect()->back()->with('success', 'Visitor registered successfully.');
     }
+
+    public function getUserByInviteCode($code)
+    {
+        $user = \App\Models\User::where('invite_code', $code)->first();
+        if ($user) {
+            return response()->json(['success' => true, 'name' => $user->name]);
+        }
+        return response()->json(['success' => false, 'message' => 'Invalid code'], 404);
+    }
 }

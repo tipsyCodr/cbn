@@ -17,6 +17,7 @@ Route::post('membership/register',[UserController::class, 'store'])->name('membe
 
 Route::get('visitor',[VisitorController::class,'index'])->name('visitor');
 Route::post('visitor/register',[VisitorController::class, 'store'])->name('visitor.register');
+Route::get('invite-code/{code}', [VisitorController::class, 'getUserByInviteCode'])->name('invite-code.lookup');
 
 Route::get('privacy', function (){
     return view('privacy');

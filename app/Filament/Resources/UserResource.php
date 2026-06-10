@@ -49,6 +49,9 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('invite_code')
+                    ->maxLength(10)
+                    ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('occupation')
                     ->nullable()
                     ->maxLength(255),

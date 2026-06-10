@@ -8,7 +8,13 @@
         </div>
         <form action="{{ route('visitor.register') }}" method="POST" class="mt-4 px-6">
             @csrf
-            <input type="hidden" name="invite_code" value="{{ request()->query('ref') }}">
+            <div class="mb-4">
+                <label for="invite_code" class="block text-sm font-medium text-gray-700">Invite Code</label>
+                <input type="text" name="invite_code" id="invite_code" value="{{ request()->query('ref') }}"
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    placeholder="Enter invite code (optional)">
+                <p id="referrer-name" class="mt-1 text-sm text-green-600 font-semibold"></p>
+            </div>
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input type="text" name="name" id="name" required
@@ -51,4 +57,38 @@
     </div>
     <!-- End Generation Here -->
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inviteInput = document.getElementById('invite_code');
+            const referrerName = document.getElementById('referrer-name');
+
+            function checkInviteCode() {
+                const code = inviteInput.value.trim();
+                if (!code) {
+                    referrerName.textContent = '';
+                    return;
+                }
+                fetch(`/invite-code/${code}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            referrerName.textContent = 'Invited by: ' + data.name;
+                            referrerName.className = 'mt-1 text-sm text-green-600 font-semibold';
+                        } else {
+                            referrerName.textContent = 'Invalid invite code';
+                            referrerName.className = 'mt-1 text-sm text-red-600 font-semibold';
+                        }
+                    })
+                    .catch(() => {
+                        referrerName.textContent = 'Invalid invite code';
+                        referrerName.className = 'mt-1 text-sm text-red-600 font-semibold';
+                    });
+            }
+
+            inviteInput.addEventListener('input', checkInviteCode);
+            if (inviteInput.value) {
+                checkInviteCode();
+            }
+        });
+    </script>
 </x-app>
