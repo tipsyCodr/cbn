@@ -42,6 +42,24 @@ class MeetingsResource extends Resource
                     ->nullable(),
                 Forms\Components\TextInput::make('speakers')
                     ->nullable(),
+                Forms\Components\Toggle::make('is_recurring')
+                    ->label('Is Recurring')
+                    ->default(false)
+                    ->live(),
+                Forms\Components\Select::make('interval')
+                    ->label('Recurring Interval')
+                    ->options([
+                        'weekly' => 'Weekly',
+                        'monthly' => 'Monthly',
+                        'yearly' => 'Yearly',
+                    ])
+                    ->visible(fn (Forms\Get $get) => $get('is_recurring'))
+                    ->nullable(),
+                Forms\Components\TextInput::make('recurring_day')
+                    ->label('Recurring Day (0-6 for Weekly, 1-31 for Monthly)')
+                    ->numeric()
+                    ->visible(fn (Forms\Get $get) => $get('is_recurring'))
+                    ->nullable(),
             ]);
     }
 

@@ -19,7 +19,11 @@ class Meeting extends Model
         'location',
         'tyfcb',
         'visitors',
-        'speakers'
+        'speakers',
+        'is_recurring',
+        'interval',
+        'recurring_day',
+        'parent_id',
     ];
     
     /**
@@ -39,5 +43,15 @@ class Meeting extends Model
     public function attendances()
     {
         return $this->hasMany(MeetingAttendance::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Meeting::class, 'parent_id');
+    }
+
+    public function occurrences()
+    {
+        return $this->hasMany(Meeting::class, 'parent_id');
     }
 }

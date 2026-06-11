@@ -20,4 +20,21 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->call(function () {
+            $nextWednesday = \Carbon\Carbon::now()->next(\Carbon\Carbon::WEDNESDAY)->format('Y-m-d');
+            if (!\App\Models\Meeting::where('date', $nextWednesday)->exists()) {
+                \App\Models\Meeting::create([
+                    'name' => 'Weekly Networking Session',
+                    'date' => $nextWednesday,
+                    'start_time' => '14:00:00',
+                    'end_time' => '16:00:00',
+                    'tyfcb' => '₹ 25,000',
+                    'visitors' => '3',
+                    'speakers' => 'Bob Johnson'
+                ]);
+            }
+        })->daily();
+    })
+    ->create();
