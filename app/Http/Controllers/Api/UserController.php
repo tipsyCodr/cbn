@@ -303,15 +303,18 @@ class UserController extends Controller
             $otoLifetime = OneToOne::where('user_id', $user->id)->count();
 
             $visitorsThisWeek = Visitor::where('created_at', '>=', $startOfWeek)
+                ->where('invited_by',$user->id)
                 ->count();
 
             $visitorsSixMonths = Visitor::where('created_at', '>=', $sixMonthsAgo)
+                ->where('invited_by',$user->id)
                 ->count();
 
             $visitorsTwelveMonths = Visitor::where('created_at', '>=', $twelveMonthsAgo)
+                ->where('invited_by',$user->id)
                 ->count();
 
-            $visitorsLifetime = Visitor::count();
+            $visitorsLifetime = Visitor::where('invited_by',$user->id)->count();
 
             // Return user details
             return response()->json([
