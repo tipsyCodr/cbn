@@ -8,7 +8,6 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Api\VisitorController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -70,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('delete', [ReferralController::class, 'destroy'])->name('delete');
     });
 
-    // Thank You FCB Routes
+    // Thank You, FCB Routes
     Route::prefix('tyfcb-requests')->name('tyfcb.')->group(function () {
         Route::get('/', [ThankYouController::class, 'index'])->name('index');
         Route::get('/{id}', [ThankYouController::class, 'show'])->name('show');
@@ -85,7 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [OneToOneController::class, 'show'])->name('show');
         Route::post('store', [OneToOneController::class, 'store'])->name('store');
         Route::post('update', [OneToOneController::class, 'update'])->name('update');
-        Route::post('delete', [OneToOneController::class, 'delete'])->name('delete');
+        Route::post('delete', [OneToOneController::class, 'destroy'])->name('delete');
     });
     Route::post('members', [UserController::class, 'index'])->name('get.members');
 });

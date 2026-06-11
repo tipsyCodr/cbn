@@ -24,12 +24,12 @@ class OneToOneController extends Controller
      */
     public function store(Request $request)
     {
-       try { 
+       try {
            $data = $request->all(); // Get all request data
            $data['user_id'] = $request->user()->id; // Set the user ID
 
            $otoRequest = OneToOne::create($data); // Create a new OneToOne request
-           
+
            // Create notification for the recipient
            NotificationService::createOneToOneNotification($otoRequest);
 
@@ -58,7 +58,7 @@ class OneToOneController extends Controller
                     'message' => 'OneToOne request not found or not authorized'
                 ], 404);
             }
-            
+
 
             return response()->json([
                 'status' => 'success',
@@ -91,5 +91,10 @@ class OneToOneController extends Controller
     {
         $otoRequest->delete(); // Delete the OneToOne request
         return response()->json(['message' => 'OneToOne request deleted successfully'], 200);
+    }
+
+    public function delete()
+    {
+
     }
 }
