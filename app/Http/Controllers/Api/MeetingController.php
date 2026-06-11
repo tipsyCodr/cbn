@@ -89,11 +89,12 @@ class MeetingController extends Controller
             $user = $request->user();
             $chapterId = $user->chapter_id;
 
-            // Get users in the same chapter
-            $users = User::where('chapter_id', $chapterId)
-                ->where('role', 'user')
-                ->orderBy('name', 'asc')
-                ->get();
+            // Get users in the same chapter, or all users if chapterId is null (e.g., admin)
+            $query = User::where('role', 'user');
+            if ($chapterId) {
+                $query->where('chapter_id', $chapterId);
+            }
+            $users = $query->orderBy('name', 'asc')->get();
 
             // Get attendance records for this meeting
             $attendances = MeetingAttendance::where('meeting_id', $meetingId)
