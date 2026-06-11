@@ -22,7 +22,6 @@ class Meeting extends Model
         'speakers',
         'is_recurring',
         'interval',
-        'recurring_day',
         'parent_id',
     ];
     

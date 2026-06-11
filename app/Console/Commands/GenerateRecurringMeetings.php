@@ -32,23 +32,24 @@ class GenerateRecurringMeetings extends Command
         foreach ($templates as $template) {
             if (!$template->interval) continue;
 
+            $templateDate = \Carbon\Carbon::parse($template->date);
+
             $currentDate = $startDate->copy();
             
             while ($currentDate->lte($endDate)) {
                 $shouldGenerate = false;
 
-                if ($template->interval === 'weekly' && $template->recurring_day !== null) {
-                    if ($currentDate->dayOfWeek == $template->recurring_day) {
+                if ($template->interval === 'weekly') {
+                    if ($currentDate->dayOfWeek == $templateDate->dayOfWeek) {
                         $shouldGenerate = true;
                     }
-                } elseif ($template->interval === 'monthly' && $template->recurring_day !== null) {
+                } elseif ($template->interval === 'monthly') {
                     $lastDayOfMonth = $currentDate->copy()->endOfMonth()->day;
-                    $targetDay = min($template->recurring_day, $lastDayOfMonth);
+                    $targetDay = min($templateDate->day, $lastDayOfMonth);
                     if ($currentDate->day == $targetDay) {
                         $shouldGenerate = true;
                     }
                 } elseif ($template->interval === 'yearly') {
-                    $templateDate = \Carbon\Carbon::parse($template->date);
                     if ($currentDate->month == $templateDate->month && $currentDate->day == $templateDate->day) {
                         $shouldGenerate = true;
                     }
@@ -68,7 +69,6 @@ class GenerateRecurringMeetings extends Command
                         $occurrence = $template->replicate();
                         $occurrence->is_recurring = false;
                         $occurrence->interval = null;
-                        $occurrence->recurring_day = null;
                         $occurrence->parent_id = $template->id;
                         $occurrence->date = $currentDate->format('Y-m-d');
                         $occurrence->save();
