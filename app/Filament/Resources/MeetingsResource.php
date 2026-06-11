@@ -53,12 +53,25 @@ class MeetingsResource extends Resource
                         'monthly' => 'Monthly',
                         'yearly' => 'Yearly',
                     ])
+                    ->live()
                     ->visible(fn (Forms\Get $get) => $get('is_recurring'))
                     ->nullable(),
-                Forms\Components\TextInput::make('recurring_day')
-                    ->label('Recurring Day (0-6 for Weekly, 1-31 for Monthly)')
-                    ->numeric()
-                    ->visible(fn (Forms\Get $get) => $get('is_recurring'))
+                Forms\Components\Select::make('recurring_day')
+                    ->label(fn (Forms\Get $get) => $get('interval') === 'weekly' ? 'Day of Week' : 'Date of Month')
+                    ->options(fn (Forms\Get $get) => match ($get('interval')) {
+                        'weekly' => [
+                            0 => 'Sunday',
+                            1 => 'Monday',
+                            2 => 'Tuesday',
+                            3 => 'Wednesday',
+                            4 => 'Thursday',
+                            5 => 'Friday',
+                            6 => 'Saturday',
+                        ],
+                        'monthly' => array_combine(range(1, 31), range(1, 31)),
+                        default => [],
+                    })
+                    ->visible(fn (Forms\Get $get) => $get('is_recurring') && in_array($get('interval'), ['weekly', 'monthly']))
                     ->nullable(),
             ]);
     }
