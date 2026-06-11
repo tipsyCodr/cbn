@@ -35,4 +35,9 @@ class Meeting extends Model
             ->orderBy('date', 'asc')
             ->first();
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(MeetingAttendance::class);
+    }
 }

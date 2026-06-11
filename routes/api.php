@@ -58,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('meetings')->name('meetings.')->group(function () {
         Route::get('/next', [MeetingController::class, 'getNextMeeting'])->name('next');
         Route::get('/upcoming', [MeetingController::class, 'getUpcomingMeetings'])->name('upcoming');
+        Route::get('/{id}/attendance', [MeetingController::class, 'getAttendance'])->name('attendance');
+        Route::post('/{id}/attendance', [MeetingController::class, 'markAttendance'])->name('mark-attendance');
     });
 
     // Referral Routes

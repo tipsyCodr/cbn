@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Meeting;
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\Schema;
+
 class MeetingSeeder extends Seeder
 {
     /**
@@ -15,7 +17,9 @@ class MeetingSeeder extends Seeder
     public function run(): void
     {
         // Clear existing meetings
+        Schema::disableForeignKeyConstraints();
         Meeting::truncate();
+        Schema::enableForeignKeyConstraints();
         
         // Create a past meeting
         Meeting::create([

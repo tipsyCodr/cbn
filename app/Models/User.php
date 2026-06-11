@@ -113,4 +113,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Chapter::class);
     }
 
+    public function meetingAttendances()
+    {
+        return $this->hasMany(MeetingAttendance::class);
+    }
+
 }

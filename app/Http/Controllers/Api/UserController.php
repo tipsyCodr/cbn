@@ -8,6 +8,7 @@ use App\Models\Referral;
 use App\Models\ThankYou; // TYFCB model
 use App\Models\OneToOne; // One-to-one model
 use App\Models\Visitor;
+use App\Models\Meeting;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -316,10 +317,19 @@ class UserController extends Controller
 
             $visitorsLifetime = Visitor::where('invited_by',$user->id)->count();
 
+            // Next meeting details
+            $nextMeeting = Meeting::getNextMeeting();
+            if ($nextMeeting) {
+                $chapterID = $user->chapter_id;
+                $userIds = User::where('chapter_id', $chapterID)->pluck('id');
+                $nextMeeting->tyfcbThisMonth = number_format(ThankYou::whereMonth('created_at', date('m'))->whereIn('from', $userIds)->sum('amount'), 2);
+            }
+
             // Return user details
             return response()->json([
                 'status' => 'success',
                 'data' => [
+                    'next_meeting' => $nextMeeting,
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
