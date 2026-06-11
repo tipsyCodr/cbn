@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/api-tests/http-client.env.json
+/api-tests/http-client.private.env.json
+/api-tests/prod.http
+/api-tests/users.http
